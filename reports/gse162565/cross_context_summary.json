@@ -1,0 +1,90 @@
+{
+  "accession": "GSE162565",
+  "organism": "Rattus norvegicus",
+  "tissue": "skeletal muscle",
+  "n_individual_wounded_animals": 30,
+  "n_fixed_markers": 14,
+  "markers": [
+    "CCL2",
+    "CD68",
+    "COL1A1",
+    "CXCL2",
+    "FN1",
+    "IL6",
+    "KRT14",
+    "MMP9",
+    "MPO",
+    "PTGS2",
+    "SERPINE1",
+    "TGFB1",
+    "TNF",
+    "VEGFA"
+  ],
+  "directions": {
+    "train_mild_test_severe": {
+      "random_forest": {
+        "mae_hours": 32.43311039644831,
+        "mae_bootstrap_95ci": [
+          13.153631518998017,
+          56.09873243014047
+        ],
+        "rmse_hours": 53.45710880395959,
+        "r2": 0.25608053354062776,
+        "within_24_hours": 0.6666666666666666
+      },
+      "ridge": {
+        "mae_hours": 22.42555274841071,
+        "mae_bootstrap_95ci": [
+          8.583988091761176,
+          41.087354361007606
+        ],
+        "rmse_hours": 38.72632119762666,
+        "r2": 0.609584117733889,
+        "within_24_hours": 0.8
+      },
+      "training_median_baseline": {
+        "mae_hours": 42.4,
+        "mae_bootstrap_95ci": [
+          18.53166666666667,
+          69.8
+        ],
+        "rmse_hours": 66.75627311346852,
+        "r2": -0.1601099610554595,
+        "within_24_hours": 0.8
+      }
+    },
+    "train_severe_test_mild": {
+      "random_forest": {
+        "mae_hours": 37.28850728833456,
+        "mae_bootstrap_95ci": [
+          9.207278905204287,
+          67.87594984194685
+        ],
+        "rmse_hours": 69.02105824669067,
+        "r2": -0.24016142238505833,
+        "within_24_hours": 0.8
+      },
+      "ridge": {
+        "mae_hours": 31.683606325682195,
+        "mae_bootstrap_95ci": [
+          6.455381621510678,
+          59.69789465577721
+        ],
+        "rmse_hours": 61.421800197694,
+        "r2": 0.017890137991377397,
+        "within_24_hours": 0.8
+      },
+      "training_median_baseline": {
+        "mae_hours": 42.4,
+        "mae_bootstrap_95ci": [
+          18.53166666666667,
+          69.8
+        ],
+        "rmse_hours": 66.75627311346852,
+        "r2": -0.1601099610554595,
+        "within_24_hours": 0.8
+      }
+    }
+  },
+  "scope": "cross-severity and cross-context evidence; not human external validation"
+}

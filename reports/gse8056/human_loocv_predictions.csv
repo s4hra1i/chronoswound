@@ -1,0 +1,13 @@
+sample,observed,predicted,correct
+GSM198866,0–3 days,0–3 days,True
+GSM198867,0–3 days,0–3 days,True
+GSM198868,0–3 days,0–3 days,True
+GSM198869,4–7 days,4–7 days,True
+GSM198870,4–7 days,4–7 days,True
+GSM198871,4–7 days,>7 days,False
+GSM198872,>7 days,0–3 days,False
+GSM198873,>7 days,>7 days,True
+GSM198874,>7 days,>7 days,True
+GSM198875,Normal,Normal,True
+GSM198876,Normal,Normal,True
+GSM198877,Normal,Normal,True

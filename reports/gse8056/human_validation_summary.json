@@ -1,0 +1,35 @@
+{
+  "feature_strategy": "fixed literature-informed panel",
+  "n_markers": 14,
+  "markers": [
+    "IL6",
+    "TNF",
+    "CXCL8",
+    "MPO",
+    "VEGFA",
+    "COL1A1",
+    "MMP9",
+    "TGFB1",
+    "CCL2",
+    "CXCL2",
+    "PTGS2",
+    "SERPINE1",
+    "FN1",
+    "KRT14"
+  ],
+  "all_four_groups_accuracy": 0.8333333333333334,
+  "all_four_groups_accuracy_95ci": [
+    0.5158622513140328,
+    0.9791374745399076
+  ],
+  "all_four_groups_balanced_accuracy": 0.8333333333333333,
+  "all_four_groups_permutation_p": 0.001,
+  "injured_only_three_bins_accuracy": 0.8888888888888888,
+  "injured_only_accuracy_95ci": [
+    0.517503485082663,
+    0.9971908632534008
+  ],
+  "injured_only_balanced_accuracy": 0.8888888888888888,
+  "injured_only_adjacent_bin_accuracy": 1.0,
+  "interpretation": "exploratory pooled-array classification; not patient-level validation"
+}
