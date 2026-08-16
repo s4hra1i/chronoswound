@@ -1,0 +1,109 @@
+geo_accession,title,patient_id,wound_stage,sample_class,days_since_injury,age,sex,hispanic,race,burn_type,location,tissue
+GSM5390523,12-W: Patient 12 Early Wound,12,Early Wound,wound,5,25.0,male,unknown,white,chemical,upper extremity,Skin
+GSM5390524,13-W: Patient 13 Late wound,13,Late wound,wound,,34.0,male,yes,hispanic,chemical,lower extremity,Skin
+GSM5390525,14-S: Patient 14 Normal scar,14,Normal scar,scar,1631,29.0,female,unknown,black,flame,upper extremity,Skin
+GSM5390526,16-D: Patient 15 Normal skin,15,Normal skin,uninjured,5,34.0,male,unknown,white,flash,n/a,Skin
+GSM5390527,17-S: Patient 16 Normal scar,16,Normal scar,scar,718,19.0,female,yes,hispanic,contact,hand,Skin
+GSM5390528,18-S: Patient 17 HTS,17,HTS,scar,1468,44.0,male,unknown,asian,flame,neck,Skin
+GSM5390529,30-W1: Patient 29 Early Wound,29,Early Wound,wound,3,16.0,male,no,native american,flame,back,Skin
+GSM5390530,30-W4: Patient 29 Late wound,29,Late wound,wound,10,16.0,male,no,native american,flame,upper extremity,Skin
+GSM5390531,31-D: Patient 30 Normal skin,30,Normal skin,uninjured,8,30.0,male,no,asian,flame,n/a,Skin
+GSM5390532,31-W1: Patient 30 Late wound,30,Late wound,wound,8,30.0,male,no,asian,flame,upper extremity,Skin
+GSM5390533,31-W2: Patient 30 Late wound,30,Late wound,wound,8,30.0,male,no,asian,flame,hand,Skin
+GSM5390534,32-D: Patient 31 Normal skin,31,Normal skin,uninjured,7,50.0,male,no,white,flame,n/a,Skin
+GSM5390535,33-D: Patient 32 Normal skin,32,Normal skin,uninjured,10,59.0,female,no,white,flame,n/a,Skin
+GSM5390536,33-W1: Patient 32 Late wound,32,Late wound,wound,10,59.0,female,no,white,flame,upper extremity,Skin
+GSM5390537,33-WE1: Patient 32 Late wound,32,Late wound,wound,19,59.0,female,no,white,flame,sternum,Skin
+GSM5390538,34-D: Patient 33 Normal skin,33,Normal skin,uninjured,,2.0,male,no,white,other,n/a,Skin
+GSM5390539,35-D: Patient 34 Normal skin,34,Normal skin,uninjured,12,30.0,male,no,white,contact,n/a,Skin
+GSM5390540,36-S: Patient 35 HTS,35,HTS,scar,211,60.0,female,no,white,flame,upper extremity,Skin
+GSM5390541,37-W: Patient 36 Late wound,36,Late wound,wound,19,56.0,male,no,white,contact,upper extremity,Skin
+GSM5390542,38-D: Patient 37 Normal skin,37,Normal skin,uninjured,6,5.0,male,yes,white,scald,n/a,Skin
+GSM5390543,38-WE: Patient 37 Early Wound,37,Early Wound,wound,6,5.0,male,yes,white,scald,lower extremity,Skin
+GSM5390544,40-WE: Patient 39 Late wound,39,Late wound,wound,8,53.0,male,no,white,flame,abdomen,Skin
+GSM5390545,41-D: Patient 40 Normal skin,40,Normal skin,uninjured,7,3.0,female,no,white,flame,n/a,Skin
+GSM5390546,41-WE: Patient 40 Early Wound,40,Early Wound,wound,7,3.0,female,no,white,flame,hand,Skin
+GSM5390547,42-WE: Patient 41 Early Wound,41,Early Wound,wound,6,44.0,male,no,white,flame,lower extremity,Skin
+GSM5390548,43-D: Patient 42 Normal skin,42,Normal skin,uninjured,10,36.0,male,no,white,flame,n/a,Skin
+GSM5390549,43-W2: Patient 42 Late wound,42,Late wound,wound,10,36.0,male,no,white,flame,hand,Skin
+GSM5390550,43-WE: Patient 42 Late wound,42,Late wound,wound,10,36.0,male,no,white,flame,hand,Skin
+GSM5390551,43-WE2: Patient 42 Late wound,42,Late wound,wound,10,36.0,male,no,white,flame,hand,Skin
+GSM5390552,44-D: Patient 43 Normal skin,43,Normal skin,uninjured,11,4.0,female,no,white,flame,n/a,Skin
+GSM5390553,44-WE: Patient 43 Late wound,43,Late wound,wound,11,4.0,female,no,white,flame,upper extremity,Skin
+GSM5390554,45-S: Patient 44 HTS,44,HTS,scar,1291,5.0,male,no,white,flame,ear,Skin
+GSM5390555,45-W: Patient 44 Chronic wound,44,Chronic wound,wound,1291,5.0,male,no,white,flame,shoulder,Skin
+GSM5390556,46-D: Patient 45 Normal skin,45,Normal skin,uninjured,3,32.0,male,no,white,contact,n/a,Skin
+GSM5390557,46-WE: Patient 45 Early Wound,45,Early Wound,wound,3,32.0,male,no,white,contact,foot,Skin
+GSM5390558,46-WE2: Patient 45 Early Wound,45,Early Wound,wound,3,32.0,male,no,white,contact,lower extremity,Skin
+GSM5390559,47-S: Patient 46 HTS,46,HTS,scar,663,44.0,male,no,black,flame,upper extremity,Skin
+GSM5390560,48-WE: Patient 47 Early Wound,47,Early Wound,wound,5,45.0,male,yes,white,other,hand,Skin
+GSM5390561,49-S: Patient 48 HTS,48,HTS,scar,575,54.0,female,no,asian,contact,upper extremity,Skin
+GSM5390562,50-D: Patient 49 Normal skin,49,Normal skin,uninjured,9,51.0,male,yes,white,flame,n/a,Skin
+GSM5390563,51-W: Patient 50 Late wound,50,Late wound,wound,17,6.0,male,no,white,flame,lower extremity,Skin
+GSM5390564,53-WE: Patient 52 Early Wound,52,Early Wound,wound,7,12.0,male,no,white,flame,sternum,Skin
+GSM5390565,54-W: Patient 53 Late wound,53,Late wound,wound,14,1.75,male,no,multiracial,scald,upper extremity,Skin
+GSM5390566,55-D: Patient 54 Normal skin,54,Normal skin,uninjured,5,64.0,male,no,white,flame,n/a,Skin
+GSM5390567,55-W: Patient 54 Early Wound,54,Early Wound,wound,5,64.0,male,no,white,flame,hand,Skin
+GSM5390568,56-D2: Patient 55 Normal skin,55,Normal skin,uninjured,5,27.0,male,no,white,flame,n/a,Skin
+GSM5390569,56-W1: Patient 55 Early Wound,55,Early Wound,wound,5,27.0,male,no,white,flame,hand,Skin
+GSM5390570,56-W2: Patient 55 Early Wound,55,Early Wound,wound,5,27.0,male,no,white,flame,hand,Skin
+GSM5390571,57-W: Patient 56 Late wound,56,Late wound,wound,8,21.0,female,no,white,flame,hand,Skin
+GSM5390572,58-S: Patient 57 HTS,57,HTS,scar,366,23.0,female,no,black,contact,neck,Skin
+GSM5390573,58-WE: Patient 57 Early Wound,57,Early Wound,wound,6,23.0,female,no,black,contact,upper extremity,Skin
+GSM5390574,59-W: Patient 58 Early Wound,58,Early Wound,wound,3,72.0,male,unknown,unknown,flame,lower extremity,Skin
+GSM5390575,60-W: Patient 59 Late wound,59,Late wound,wound,21,70.0,female,no,white,flame,abdomen,Skin
+GSM5390576,61-W: Patient 60 Chronic wound,60,Chronic wound,wound,97,25.0,male,no,white,flame,back,Skin
+GSM5390577,62-D: Patient 61 Normal skin,61,Normal skin,uninjured,6,3.0,male,no,white,flame,n/a,Skin
+GSM5390578,62-W: Patient 61 Early Wound,61,Early Wound,wound,6,3.0,male,no,white,flame,upper extremity,Skin
+GSM5390579,62-W2: Patient 61 Early Wound,61,Early Wound,wound,6,3.0,male,no,white,flame,back,Skin
+GSM5390580,63-S: Patient 62 HTS,62,HTS,scar,5287,15.0,female,yes,white,unknown,hand,Skin
+GSM5390581,64-W: Patient 63 Early Wound,63,Early Wound,wound,4,42.0,male,no,white,other,lower extremity,Skin
+GSM5390582,67-W: Patient 65 Early Wound,65,Early Wound,wound,3,17.0,male,no,white,flame,lower extremity,Skin
+GSM5390583,68-W: Patient 66 Late wound,66,Late wound,wound,8,37.0,male,no,white,flame,lower extremity,Skin
+GSM5390584,70-W: Patient 68 Late wound,68,Late wound,wound,11,56.0,female,no,white,scald,lower extremity,Skin
+GSM5390585,73-W: Patient 70 Late wound,70,Late wound,wound,9,59.0,male,no,white,scald,lower extremity,Skin
+GSM5390586,74-D: Patient 71 Normal skin,71,Normal skin,uninjured,14,10.0,male,no,white,unknown,n/a,Skin
+GSM5390587,74-W: Patient 71 Late wound,71,Late wound,wound,14,10.0,male,no,white,unknown,lower extremity,Skin
+GSM5390588,76-D: Patient 73 Normal skin,73,Normal skin,uninjured,289,1.8,male,no,native american,scald,n/a,Skin
+GSM5390589,76-S: Patient 73 HTS,73,HTS,scar,279,1.8,male,no,native american,scald,face,Skin
+GSM5390590,78-D: Patient 75 Normal skin,75,Normal skin,uninjured,7,31.0,female,no,native american,contact,n/a,Skin
+GSM5390591,78-W2: Patient 75 Early Wound,75,Early Wound,wound,7,31.0,female,no,native american,contact,abdomen,Skin
+GSM5390592,79-D: Patient 76 Normal skin,76,Normal skin,uninjured,14,0.42,female,no,white,contact,n/a,Skin
+GSM5390593,79-W1: Patient 76 Late wound,76,Late wound,wound,14,0.42,female,no,white,contact,lower extremity,Skin
+GSM5390594,79-W3: Patient 76 Late wound,76,Late wound,wound,14,0.42,female,no,white,contact,abdomen,Skin
+GSM5390595,80-D: Patient 77 Normal skin,77,Normal skin,uninjured,5,71.0,female,no,white,flame,n/a,Skin
+GSM5390596,80-WE: Patient 77 Early Wound,77,Early Wound,wound,5,71.0,female,no,white,flame,sternum,Skin
+GSM5390597,81-D: Patient 78 Normal skin,78,Normal skin,uninjured,8,58.0,male,no,white,flame,n/a,Skin
+GSM5390598,81-W: Patient 78 Late wound,78,Late wound,wound,8,58.0,male,no,white,flame,lower extremity,Skin
+GSM5390599,83-D: Patient 80 Normal skin,80,Normal skin,uninjured,10,53.0,female,no,black,flame,n/a,Skin
+GSM5390600,83-W3: Patient 80 Late wound,80,Late wound,wound,10,53.0,female,no,black,flame,lower extremity,Skin
+GSM5390601,83-WE3: Patient 80 Late wound,80,Late wound,wound,10,53.0,female,no,black,flame,lower extremity,Skin
+GSM5390602,84-S: Patient 81 HTS,81,HTS,scar,1274,3.0,male,no,white,contact,lower extremity,Skin
+GSM5390603,85-W1: Patient 82 Early Wound,82,Early Wound,wound,6,54.0,female,unknown,white,unknown,shoulder,Skin
+GSM5390604,87-D: Patient 84 Normal skin,84,Normal skin,uninjured,56,67.0,female,no,white,flame,n/a,Skin
+GSM5390605,87-W: Patient 84 Chronic wound,84,Chronic wound,wound,56,67.0,female,no,white,flame,back,Skin
+GSM5390606,88-W: Patient 83 Early Wound,83,Early Wound,wound,4,11.0,female,unknown,unknown,flame,shoulder,Skin
+GSM5390607,E705-S: Patient 85 HTS,85,HTS,scar,608,46.0,female,unknown,asian,unknown,lower extremity,Skin
+GSM5390608,E706-S: Patient 86 HTS,86,HTS,scar,555,9.0,male,unknown,native american,unknown,neck,Skin
+GSM5390609,E707-W: Patient 87 Late wound,87,Late wound,wound,27,30.0,male,unknown,native american,unknown,lower extremity,Skin
+GSM5390610,E708-W: Patient 88 Late wound,88,Late wound,wound,22,10.0,male,unknown,native american,unknown,sternum,Skin
+GSM5390611,E710-W: Patient 89 Late wound,89,Late wound,wound,20,35.0,male,unknown,native american,unknown,lower extremity,Skin
+GSM5390612,E711-S: Patient 90 HTS,90,HTS,scar,1925,11.0,male,yes,unknown,unknown,sternum,Skin
+GSM5390613,E714-S: Patient 92 HTS,92,HTS,scar,406,44.0,male,unknown,white,unknown,neck,Skin
+GSM5390614,E716-S: Patient 93 HTS,93,HTS,scar,187,51.0,male,unknown,white,unknown,sternum,Skin
+GSM5390615,E717-S: Patient 94 HTS,94,HTS,scar,167,60.0,male,unknown,black,unknown,hand,Skin
+GSM5390616,E722-S: Patient 95 HTS,95,HTS,scar,835,7.0,female,unknown,asian,unknown,upper extremity,Skin
+GSM5390617,E724-D: Patient 96 Normal skin,96,Normal skin,uninjured,147,11.0,male,unknown,white,unknown,back,Skin
+GSM5390618,E725-S: Patient 96 HTS,96,HTS,scar,147,11.0,male,unknown,white,unknown,sternum,Skin
+GSM5390619,E728-W: Patient 97 Late wound,97,Late wound,wound,19,,female,unknown,white,unknown,abdomen,Skin
+GSM5390620,E731-S: Patient 98 HTS,98,HTS,scar,418,1.0,female,unknown,white,unknown,lower extremity,Skin
+GSM5390621,E733-S: Patient 99 HTS,99,HTS,scar,509,7.0,male,unknown,white,unknown,lower extremity,Skin
+GSM5390622,E735-S: Patient 100 HTS,100,HTS,scar,241,19.0,male,unknown,white,unknown,upper extremity,Skin
+GSM5390623,E736-S: Patient 101 HTS,101,HTS,scar,324,54.0,female,unknown,black,unknown,upper extremity,Skin
+GSM5390624,E738-S: Patient 102 HTS,102,HTS,scar,307,4.0,male,unknown,white,unknown,upper extremity,Skin
+GSM5390625,E741-S: Patient 103 HTS,103,HTS,scar,354,9.0,female,unknown,white,unknown,upper extremity,Skin
+GSM5390626,E742-S: Patient 104 HTS,104,HTS,scar,201,,male,unknown,white,unknown,neck,Skin
+GSM5390627,E746-S: Patient 106 HTS,106,HTS,scar,470,3.0,male,unknown,white,unknown,sternum,Skin
+GSM5390628,E751-S: Patient 105 HTS,105,HTS,scar,886,61.0,female,unknown,asian,unknown,face,Skin
+GSM5390629,E752-S: Patient 105 HTS,105,HTS,scar,886,61.0,female,unknown,asian,unknown,sternum,Skin
+GSM5390630,E753-S: Patient 105 HTS,105,HTS,scar,886,61.0,female,unknown,asian,unknown,ear,Skin
