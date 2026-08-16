@@ -3,8 +3,8 @@ message: "If you use or adapt this software, please cite it as below."
 title: "ChronosWound: Explainable Multimodal Wound-Age Estimation"
 type: software
 authors:
-  - family-names: "A"
-    given-names: "S"
+  - family-names: "Ali"
+  given-names: "S."
 version: 0.2.0
 date-released: 2026-08-15
 license: MIT
