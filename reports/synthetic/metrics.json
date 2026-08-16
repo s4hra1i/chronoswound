@@ -1,0 +1,21 @@
+{
+  "data_source": "synthetic software demonstration; not biological evidence",
+  "selected_model": "random_forest",
+  "cv_mae_hours": {
+    "elastic_net": 10.559845288335229,
+    "random_forest": 5.776141966335051
+  },
+  "test_mae_hours": 5.27295218709232,
+  "test_rmse_hours": 10.553414194026207,
+  "test_r2": 0.953390506254437,
+  "target_interval_coverage": 0.9,
+  "observed_interval_coverage": 0.9523809523809523,
+  "interval_radius_hours": 23.920947278911626,
+  "mean_interval_width_hours": 46.29647453838942,
+  "median_interval_width_hours": 47.84189455782325,
+  "calibration_quantile_level": 0.9117647058823529,
+  "n_model_training": 195,
+  "n_calibration": 102,
+  "n_development": 297,
+  "n_test": 63
+}

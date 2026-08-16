@@ -7,6 +7,7 @@ This directory contains the checked outputs used in the README and results manus
 - `gse178411/` contains every output from the prospectively tagged primary human analysis,
   including all repeated out-of-fold predictions, folds, assignments, BCa comparison summary
   and the complete 199-permutation null distribution.
-- Root-level files belong to the synthetic software demonstration.
+- `synthetic/` contains the generated software demonstration, explicitly separated from all
+  biological evidence. Its performance must not be reported as wound-age validation.
 
 Every result can be regenerated from public GEO inputs using the commands in the repository README. Generated outputs are committed so reviewers can inspect the evidence without first downloading platform files. They are not additional independent datasets.

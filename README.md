@@ -83,7 +83,7 @@ chronoswound/
 │   └── cli.py              # end-to-end command line interface
 ├── tests/                  # unit and integration tests
 ├── data/                   # generated locally; raw data are never committed
-├── reports/figures/        # generated model outputs
+├── reports/synthetic/      # generated demonstration outputs; not evidence
 └── .github/workflows/      # continuous integration
 ```
 
@@ -97,7 +97,7 @@ source .venv/bin/activate       # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 
 chronoswound generate --samples 360 --output data/synthetic_wounds.csv
-chronoswound train --input data/synthetic_wounds.csv --output reports
+chronoswound train --input data/synthetic_wounds.csv --output reports/synthetic
 chronoswound real-analysis --output reports/gse8056
 chronoswound cross-context --output reports/gse162565
 chronoswound gse178411 --output reports/gse178411
@@ -108,12 +108,12 @@ The real-data command downloads the NCBI GEO series matrix and platform annotati
 
 The training command creates:
 
-- `reports/metrics.json` — cross-validated and hold-out performance;
-- `reports/predictions.csv` — observed age, prediction and interval bounds;
-- `reports/model.joblib` — fitted pipeline plus model card metadata;
-- `reports/figures/predicted_vs_observed.png`;
-- `reports/figures/residuals.png`;
-- `reports/figures/feature_importance.png`.
+- `reports/synthetic/metrics.json` — synthetic cross-validated and hold-out performance;
+- `reports/synthetic/predictions.csv` — generated outcomes, predictions and interval bounds;
+- `reports/synthetic/model.joblib` — fitted demonstration pipeline plus metadata;
+- `reports/synthetic/figures/predicted_vs_observed.png`;
+- `reports/synthetic/figures/residuals.png`;
+- `reports/synthetic/figures/feature_importance.png`.
 
 ## Input schema
 
