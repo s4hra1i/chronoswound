@@ -1,29 +1,45 @@
 # ChronosWound
 
-### Explainable multimodal wound-age estimation from molecular and histological signals
+### A prospective test of transcriptomic resolution for subacute burn-wound age
 
 [![CI](https://github.com/s4hra1i/chronoswound/actions/workflows/ci.yml/badge.svg)](https://github.com/s4hra1i/chronoswound/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-ChronosWound is a research prototype for estimating elapsed time since injury from a combination of gene-expression, inflammatory-cell and tissue-remodelling measurements. It turns an earlier independent project—*Studying the Ageing of Injuries Using a Gene-Expression Approach*—into a reproducible bioinformatics workflow.
+ChronosWound turns an earlier independent project—*Studying the Ageing of Injuries Using a Gene-Expression Approach*—into a reproducible test of whether a fixed transcript panel can resolve the age of surgically sampled burn wounds between 3 and 27 days after injury.
 
-The repository has three deliberately separated evidence tracks: pooled human burn-margin transcriptomics (**GSE8056**), cross-severity validation in individual rat contusions (**GSE162565**), and a synthetic modelling sandbox for software demonstration.
+The primary analysis uses patient-level human RNA-seq from **GSE178411**. Earlier human pooled-array work (**GSE8056**) and rat cross-severity transfer (**GSE162565**) are retained as exploratory evidence. Synthetic data are software-test fixtures only; their predictive performance is not biological evidence.
 
 > **Research use only.** Neither the real-data analyses nor the synthetic estimator are clinically or forensically validated. Outputs must not be used as evidence in real cases.
 
+## Prospective analysis status
+
+Before the GSE178411 protocol was tagged, only metadata structure, cohort eligibility, target distribution, repeated-patient structure and locked-marker presence were audited. No expression–outcome association or predictive model using GSE178411 was examined. Results will be committed separately and will reference [`gse178411-protocol-v1.0`](docs/STUDY_PROTOCOL.md).
+
+The primary cohort is 49 complete observations from 39 patients. A transcript panel will be considered practically useful only if it reduces repeated patient-grouped out-of-fold MAE by at least 20% relative to a training-fold median, has a patient-clustered BCa interval excluding zero and passes a full-pipeline permutation test. This threshold is deliberately conservative: failure does not prove absence of molecular signal, only failure to demonstrate useful resolution at this sample size.
+
+## Existing exploratory evidence
+
+| Evaluation | Result | Essential qualification |
+|---|---:|---|
+| GSE8056 four-group arrays | 83.3% accuracy | Exploratory; 95% CI 51.6–97.9%; 12 pooled arrays; panel ordering not independently verifiable from commit history |
+| GSE8056 injured-only bins | 88.9% accuracy | Exploratory; 95% CI 51.8–99.7%; nine pooled arrays |
+| Rat mild → severe, ridge | 22.4 h MAE; R² 0.610 | Cross-species and cross-tissue; not human validation |
+| Rat severe → mild, ridge | 31.7 h MAE; R² 0.018 | Essentially no explained variance in this direction |
+| Rat severe → mild, random forest | 37.3 h MAE; R² −0.240 | Worse than predicting the mean |
+
 ## Why this problem matters
 
-Wounds change through overlapping haemostatic, inflammatory, proliferative and remodelling phases. No single marker acts as a perfect clock: transcriptional signals, immune-cell composition and extracellular-matrix changes are affected by tissue, health, treatment and environment. ChronosWound therefore treats wound age as a **multimodal, uncertainty-aware regression problem**, rather than presenting one biomarker as determinative.
+Wounds change through overlapping haemostatic, inflammatory, proliferative and remodelling phases. No single marker acts as a perfect clock: transcriptional signals and extracellular-matrix changes are affected by tissue, health, treatment and environment. ChronosWound therefore treats wound age as a constrained, uncertainty-aware regression problem rather than presenting one biomarker as determinative.
 
 ## What the project demonstrates
 
 - A biologically structured panel spanning early inflammation (`IL6`, `TNF`, `CXCL8`), leukocyte recruitment (`MPO`, `CD68`) and repair/remodelling (`VEGFA`, `COL1A1`, `MMP9`, `TGFB1`)
-- Synthetic cohort generation with donor effects, technical noise and biologically plausible temporal patterns
-- A leakage-resistant `GroupKFold` evaluation strategy that keeps samples from the same donor together
-- Comparison of elastic-net and random-forest regressors
-- Residual-calibrated 90% prediction intervals
-- Permutation importance and residual diagnostics for transparent model assessment
+- A prospectively tagged protocol with an explicit negative-result rule
+- Repeated patient-grouped evaluation with all fold assignments and fold-level errors retained
+- Direct comparison of training-median, covariates-only, locked-panel and combined ridge models
+- Patient-clustered BCa uncertainty and a full-pipeline patient-block permutation test
+- Synthetic cohort generation retained only to test software behaviour
 - A command-line interface, automated tests and continuous integration
 - Real human transcriptomics: PCA, marker heatmaps and FDR-ranked temporal signals from GSE8056
 - An optional Streamlit prediction explorer with an unavoidable research-only warning
@@ -93,36 +109,24 @@ Real datasets should additionally record tissue site, injury mechanism, sampling
 
 ## Modelling design
 
-1. Reserve entire donors as a final test set.
-2. Engineer three transparent phase scores: inflammation, repair and remodelling.
-3. Tune candidate models using grouped cross-validation on training donors only.
-4. Select the model with the lowest grouped-CV MAE.
-5. Use calibration-donor residuals to estimate a distribution-free 90% error radius.
-6. Refit on development data and evaluate once on untouched test donors.
+1. Restrict the primary GSE178411 cohort prospectively to complete Early/Late wound samples collected 3–27 days after injury.
+2. Compare a training-fold median, covariates-only ridge, locked-panel ridge and combined ridge on identical outer folds.
+3. Keep every patient's samples within one fold and repeat five-fold grouped evaluation across 20 fixed seeds.
+4. Fit encoding, scaling and ridge tuning only within training data.
+5. Compare paired out-of-fold errors using patient-clustered BCa uncertainty and a full-pipeline permutation null.
+6. Apply the conservative success rule fixed in the tagged [analysis protocol](docs/STUDY_PROTOCOL.md).
 
-MAE is the primary metric because its unit—hours—is directly interpretable. RMSE exposes occasional large errors, while interval coverage tests whether the stated uncertainty behaves as intended.
+MAE is reported consistently in days. Every repetition-level and fold-level result will be retained; classification cannot replace a failed regression result.
 
-## Real-data analysis
+## Real-data tracks
 
-The public **GSE8056** study contains 12 human microarrays: three pooled arrays from each of 0–3, 4–7 and >7 days after thermal injury, plus three normal-skin controls. ChronosWound downloads the processed matrix from GEO, maps GPL570 probes to gene symbols, performs PCA, visualises a locked wound-response panel and ranks temporal signals using an exploratory one-way ANOVA with Benjamini–Hochberg correction.
+The primary planned analysis uses **GSE178411**, a human RNA-seq cohort containing 108 skin samples. The eligible complete-case subset contains 49 Early/Late burn-wound samples from 39 patients over 3–27 days. The analysis has been designed but, at the protocol tag, has not yet been run.
 
-The repository reports a constrained leave-one-array-out test using only the [locked marker panel](docs/BIOMARKER_PROTOCOL.md), accompanied by exact confidence intervals, a permutation test and an injured-only sensitivity analysis. It reports array-level stress-test performance—not patient-level accuracy—and foregrounds the instability caused by only twelve pooled arrays.
+The earlier **GSE8056** study contains 12 pooled human microarrays: three from each of 0–3, 4–7 and >7 days after thermal injury, plus three normal-skin controls. Its panel ordering cannot be independently verified from the commit history, so its results are exploratory rather than confirmatory.
 
-For complementary evidence, GSE162565 provides 30 individually sampled rat muscle contusions at five exact time points under mild and severe injury. ChronosWound trains on one severity and tests unchanged on the other. This probes severity robustness while remaining explicitly labelled as cross-species, cross-tissue evidence rather than human external validation.
-
-### Results snapshot
-
-| Evaluation | Model | Result | Essential qualification |
-|---|---|---:|---|
-| Human four-group leave-one-array-out | Fixed-panel nearest centroid | 83.3% accuracy | 95% CI 51.6–97.9%; pooled arrays |
-| Human injured-only time bins | Fixed-panel nearest centroid | 88.9% accuracy | 95% CI 51.8–99.7%; nine arrays |
-| Rat mild → severe | Ridge | 22.4 h MAE | Bootstrap 95% CI 8.6–41.1 h |
-| Rat severe → mild | Ridge | 31.7 h MAE | Bootstrap 95% CI 6.5–59.7 h |
-| Rat median baseline | No molecular features | 42.4 h MAE | Same value in both directions |
+**GSE162565** provides 30 individually sampled rat muscle contusions at five exact time points under mild and severe injury. Transfer was asymmetric: ridge achieved R² 0.610 from mild to severe but only 0.018 from severe to mild; random forest produced R² −0.240 in the failed direction. This is cross-species, cross-tissue exploratory evidence, not human validation.
 
 ![Human GSE8056 PCA](reports/gse8056/figures/real_data_pca.png)
-
-![Cross-severity model comparison](reports/gse162565/figures/cross_severity_predictions.png)
 
 Read the [study protocol](docs/STUDY_PROTOCOL.md) and [risk-of-bias register](docs/RISK_OF_BIAS.md) before the results.
 
