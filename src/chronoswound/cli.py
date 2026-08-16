@@ -5,11 +5,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .data import generate_synthetic_cohort, load_dataset
-from .modelling import train_and_evaluate
-from .reporting import save_report
-from .real_data import download_geo_files, run_geo_analysis
 from .cross_context import download_rat_matrix, evaluate_cross_severity
+from .data import generate_synthetic_cohort, load_dataset
+from .gse178411 import AnalysisConfig, download_counts, run_analysis
+from .modelling import train_and_evaluate
+from .real_data import download_geo_files, run_geo_analysis
+from .reporting import save_report
 
 
 def main() -> None:
@@ -31,6 +32,18 @@ def main() -> None:
     )
     cross.add_argument("--data-dir", type=Path, default=Path("data/geo"))
     cross.add_argument("--output", type=Path, default=Path("reports/gse162565"))
+    prospective = sub.add_parser(
+        "gse178411", help="Run the prospectively tagged GSE178411 analysis"
+    )
+    prospective.add_argument(
+        "--counts", type=Path, default=Path("data/geo/GSE178411_counts.txt.gz")
+    )
+    prospective.add_argument(
+        "--metadata", type=Path, default=Path("data/GSE178411_sample_metadata.csv")
+    )
+    prospective.add_argument("--output", type=Path, default=Path("reports/gse178411"))
+    prospective.add_argument("--bootstrap-replicates", type=int, default=10_000)
+    prospective.add_argument("--permutation-replicates", type=int, default=199)
     args = parser.parse_args()
 
     if args.command == "generate":
@@ -50,7 +63,7 @@ def main() -> None:
             f"{summary['n_genes']} annotated genes"
         )
         print(f"Exploratory report written to {args.output}")
-    else:
+    elif args.command == "cross-context":
         matrix = download_rat_matrix(args.data_dir)
         mapping = Path(__file__).parents[2] / "resources" / "GPL17117_focus_probe_map.csv"
         summary = evaluate_cross_severity(matrix, mapping, args.output)
@@ -58,6 +71,19 @@ def main() -> None:
             f"Cross-severity validation complete for "
             f"{summary['n_individual_wounded_animals']} wounded animals"
         )
+    else:
+        counts = download_counts(args.counts)
+        config = AnalysisConfig(
+            bootstrap_replicates=args.bootstrap_replicates,
+            permutation_replicates=args.permutation_replicates,
+        )
+        summary = run_analysis(counts, args.metadata, args.output, config)
+        result = summary["primary_comparison"]
+        print(
+            "GSE178411 analysis complete; prospective success rule met: "
+            f"{result['all_three_success_conditions_met']}"
+        )
+        print(f"Report written to {args.output}")
 
 
 if __name__ == "__main__":

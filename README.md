@@ -57,6 +57,7 @@ chronoswound/
 │   ├── real_data.py        # GSE8056 ingestion and exploratory analysis
 │   ├── validation.py       # fixed-panel human time-bin stress tests
 │   ├── cross_context.py    # GSE162565 severity-transfer analysis
+│   ├── gse178411.py        # prospectively specified primary human analysis
 │   ├── reporting.py        # figures and machine-readable metrics
 │   └── cli.py              # end-to-end command line interface
 ├── tests/                  # unit and integration tests
@@ -78,6 +79,7 @@ chronoswound generate --samples 360 --output data/synthetic_wounds.csv
 chronoswound train --input data/synthetic_wounds.csv --output reports
 chronoswound real-analysis --output reports/gse8056
 chronoswound cross-context --output reports/gse162565
+chronoswound gse178411 --output reports/gse178411
 pytest
 ```
 
