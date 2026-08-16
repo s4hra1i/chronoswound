@@ -12,11 +12,22 @@ The primary analysis uses patient-level human RNA-seq from **GSE178411**. Earlie
 
 > **Research use only.** Neither the real-data analyses nor the synthetic estimator are clinically or forensically validated. Outputs must not be used as evidence in real cases.
 
-## Prospective analysis status
+## Primary result: prospectively evaluated GSE178411 cohort
 
-Before the GSE178411 protocol was tagged, only metadata structure, cohort eligibility, target distribution, repeated-patient structure and locked-marker presence were audited. No expression–outcome association or predictive model using GSE178411 was examined. Results will be committed separately and will reference [`gse178411-protocol-v1.0`](docs/STUDY_PROTOCOL.md).
+The analysis was run after public tag [`gse178411-protocol-v1.0`](https://github.com/s4hra1i/chronoswound/releases/tag/gse178411-protocol-v1.0), using code commit `b56ae32`. Before that tag, only metadata structure, cohort eligibility, target distribution, repeated-patient structure and locked-marker presence had been audited; no GSE178411 expression–outcome model had been examined.
 
-The primary cohort is 49 complete observations from 39 patients. A transcript panel will be considered practically useful only if it reduces repeated patient-grouped out-of-fold MAE by at least 20% relative to a training-fold median, has a patient-clustered BCa interval excluding zero and passes a full-pipeline permutation test. This threshold is deliberately conservative: failure does not prove absence of molecular signal, only failure to demonstrate useful resolution at this sample size.
+The locked 15-gene ridge model achieved a mean repeated patient-grouped out-of-fold MAE of **2.80 days**, compared with **4.26 days** for the training-fold median: a **34.3% reduction**. The patient-clustered BCa estimate of the improvement was 1.46 days (95% CI 0.68–2.43), and none of 199 full-pipeline patient-block permutations matched it (one-sided Monte Carlo *p*=0.005). All three prospectively fixed success conditions were met.
+
+| Identical 49-sample evaluation | Mean MAE | Across-seed range | Interpretation |
+|---|---:|---:|---|
+| Training-fold median | 4.26 d | 4.08–4.63 d | Primary baseline |
+| Covariates only | 4.58 d | 4.30–5.05 d | Age, sex, burn type and location did not beat the median |
+| Locked 15-gene panel | **2.80 d** | 2.54–3.30 d | 34.3% lower MAE than baseline; prospective rule met |
+| Covariates + panel | 3.03 d | 2.60–3.46 d | Better than covariates alone, but worse than the panel alone |
+
+![Repeated grouped validation result](reports/gse178411/figures/model_mae_comparison.png)
+
+This is evidence of molecular resolution only for surgically sampled burn wounds in this cohort's **3–27-day** range. It does not validate injuries under 72 hours, other wound mechanisms, post-mortem samples or forensic casework. The target is concentrated at surgical scheduling intervals, only nine patients contribute repeated eligible samples, and collection-year/RNA-integrity confounding cannot be tested.
 
 ## Existing exploratory evidence
 
@@ -122,7 +133,7 @@ MAE is reported consistently in days. Every repetition-level and fold-level resu
 
 ## Real-data tracks
 
-The primary planned analysis uses **GSE178411**, a human RNA-seq cohort containing 108 skin samples. The eligible complete-case subset contains 49 Early/Late burn-wound samples from 39 patients over 3–27 days. The analysis has been designed but, at the protocol tag, has not yet been run.
+The primary analysis uses **GSE178411**, a human RNA-seq cohort containing 108 skin samples. The prospectively eligible complete-case subset contains 49 Early/Late burn-wound samples from 39 patients over 3–27 days. The complete analysis and every intermediate evaluation output are in [`reports/gse178411`](reports/gse178411); see the [primary results report](docs/GSE178411_RESULTS.md).
 
 The earlier **GSE8056** study contains 12 pooled human microarrays: three from each of 0–3, 4–7 and >7 days after thermal injury, plus three normal-skin controls. Its panel ordering cannot be independently verified from the commit history, so its results are exploratory rather than confirmatory.
 
