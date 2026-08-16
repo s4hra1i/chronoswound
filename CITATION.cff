@@ -4,7 +4,7 @@ title: "ChronosWound: Explainable Multimodal Wound-Age Estimation"
 type: software
 authors:
   - family-names: "Ali"
-  given-names: "S."
+    given-names: "S."
 version: 0.2.0
 date-released: 2026-08-15
 license: MIT
