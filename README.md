@@ -14,7 +14,17 @@ The primary analysis uses patient-level human RNA-seq from **GSE178411**. Earlie
 
 ## Primary result: prospectively evaluated GSE178411 cohort
 
-The analysis was run after public tag [`gse178411-protocol-v1.0`](https://github.com/s4hra1i/chronoswound/releases/tag/gse178411-protocol-v1.0), using code commit `b56ae32`. Before that tag, only metadata structure, cohort eligibility, target distribution, repeated-patient structure and locked-marker presence had been audited; no GSE178411 expression–outcome model had been examined.
+ChronosWound builds on an earlier independent wound-age project and a pre-existing biologically
+defined marker panel. The panel predates this cohort and is documented in
+[`docs/BIOMARKER_PROTOCOL.md`](docs/BIOMARKER_PROTOCOL.md), committed before GSE178411 was added
+to the repository. On 16 August 2026, GSE178411 was identified as a stronger patient-level
+validation cohort. Its metadata, eligibility structure, outcome distribution, patient grouping
+and locked-marker availability were audited before the analysis protocol was tagged. No
+expression–outcome association, including a single-marker correlation, or predictive model using
+GSE178411 was examined before that tag. The short interval between protocol and execution reflects
+the use of that existing panel and established modelling methods.
+
+The analysis was run after public tag [`gse178411-protocol-v1.0`](https://github.com/s4hra1i/chronoswound/releases/tag/gse178411-protocol-v1.0), using code commit `b56ae32`.
 
 The locked 15-gene ridge model achieved a mean repeated patient-grouped out-of-fold MAE of **2.80 days**, compared with **4.26 days** for the training-fold median: a **34.3% reduction**. The patient-clustered BCa estimate of the improvement was 1.46 days (95% CI 0.68–2.43), and none of 199 full-pipeline patient-block permutations matched it (one-sided Monte Carlo *p*=0.005). All three prospectively fixed success conditions were met.
 
