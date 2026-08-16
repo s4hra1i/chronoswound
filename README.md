@@ -2,7 +2,7 @@
 
 ### Explainable multimodal wound-age estimation from molecular and histological signals
 
-[![CI](https://github.com/YOUR_USERNAME/chronoswound/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/chronoswound/actions/workflows/ci.yml)
+[![CI](https://github.com/s4hra1i/chronoswound/actions/workflows/ci.yml/badge.svg)](https://github.com/s4hra1i/chronoswound/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -52,7 +52,7 @@ chronoswound/
 ## Quick start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/chronoswound.git
+git clone https://github.com/s4hra1i/chronoswound.git
 cd chronoswound
 python -m venv .venv
 source .venv/bin/activate       # Windows: .venv\Scripts\activate
