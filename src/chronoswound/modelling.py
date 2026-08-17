@@ -95,8 +95,8 @@ def train_and_evaluate(df: pd.DataFrame, seed: int = 42, coverage: float = 0.90)
         "mean_interval_width_hours": float(np.mean(upper - lower)),
         "median_interval_width_hours": float(np.median(upper - lower)),
         "calibration_quantile_level": float(quantile_level),
-        "n_model_training": int(len(train_rel)),
-        "n_calibration": int(len(cal_rel)),
+        "n_model_training": len(train_rel),
+        "n_calibration": len(cal_rel),
         "n_development": len(dev_idx),
         "n_test": len(test_idx),
     }
