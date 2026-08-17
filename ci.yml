@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - python-version: "3.11"
+            scikit-learn-version: "1.6.1"
+          - python-version: "3.12"
+            scikit-learn-version: "1.8.0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pip install "scikit-learn==${{ matrix.scikit-learn-version }}"
+      - run: ruff check src tests
+      - run: pytest -q

@@ -1,13 +1,16 @@
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from chronoswound.gse178411 import (
     PANEL,
+    COUNTS_SHA256,
     AnalysisConfig,
     _permuted_outcome,
     bca_cluster_interval,
     repeated_nested_cv,
+    download_counts,
 )
 
 
@@ -61,3 +64,11 @@ def test_cluster_bca_and_block_permutation() -> None:
     permuted = _permuted_outcome(cohort, np.random.default_rng(4))
     assert set(permuted[:4]) == {3.0, 5.0, 8.0, 10.0}
     assert permuted[4] == 12.0
+
+
+def test_download_counts_rejects_unpinned_content(tmp_path) -> None:
+    counts = tmp_path / "GSE178411_counts.txt.gz"
+    counts.write_bytes(b"not the pinned count matrix")
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        download_counts(counts)
+    assert len(COUNTS_SHA256) == 64

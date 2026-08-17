@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import platform
@@ -30,6 +31,7 @@ COUNTS_URL = (
     "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE178nnn/GSE178411/suppl/"
     "GSE178411_counts.txt.gz"
 )
+COUNTS_SHA256 = "19622a1b543d9b67481ca5bb13e35f73aafd28fe56f62dde3309e91c37ad0228"
 PANEL_GENE_IDS = {
     "IL6": 3569,
     "TNF": 7124,
@@ -66,10 +68,16 @@ class AnalysisConfig:
 
 
 def download_counts(destination: Path) -> Path:
-    """Download the study-author-submitted filtered count matrix if absent."""
+    """Download and verify the study-author-submitted filtered count matrix."""
     if not destination.exists():
         destination.parent.mkdir(parents=True, exist_ok=True)
         urllib.request.urlretrieve(COUNTS_URL, destination)
+    observed = hashlib.sha256(destination.read_bytes()).hexdigest()
+    if observed != COUNTS_SHA256:
+        raise ValueError(
+            "GSE178411 count-matrix checksum mismatch: "
+            f"expected {COUNTS_SHA256}, observed {observed}"
+        )
     return destination
 
 
@@ -416,11 +424,15 @@ def run_analysis(
 
     baseline_panel = _paired_patient_values(predictions, "median", "panel")
     covariates_combined = _paired_patient_values(predictions, "covariates", "combined")
+    panel_combined = _paired_patient_values(predictions, "panel", "combined")
     panel_interval = bca_cluster_interval(
         baseline_panel, config.bootstrap_replicates, PROTOCOL_SEED + 700_000
     )
     incremental_interval = bca_cluster_interval(
         covariates_combined, config.bootstrap_replicates, PROTOCOL_SEED + 800_000
+    )
+    panel_combined_interval = bca_cluster_interval(
+        panel_combined, config.bootstrap_replicates, PROTOCOL_SEED + 850_000
     )
     observed_improvement = float(model_means["median"] - model_means["panel"])
     permutation, null = permutation_test(cohort, config, observed_improvement)
@@ -436,6 +448,9 @@ def run_analysis(
     panel_rows = predictions.loc[predictions["model"].eq("panel")].copy()
     panel_rows["observed_class"] = np.where(panel_rows["observed_days"] < 8, "Early", "Late")
     panel_rows["predicted_class"] = np.where(panel_rows["predicted_days"] < 8, "Early", "Late")
+    majority_class_accuracy = float(
+        panel_rows["observed_class"].value_counts(normalize=True).max()
+    )
 
     summary: dict[str, object] = {
         "protocol_tag": PROTOCOL_TAG,
@@ -476,9 +491,17 @@ def run_analysis(
             "permutation": permutation,
             "all_three_success_conditions_met": panel_success,
         },
-        "incremental_comparison": {
-            "covariates_minus_combined_mae": incremental_interval,
-            "incremental_molecular_value_established": incremental_success,
+        "covariate_comparisons": {
+            "preregistered_covariates_minus_combined_mae": incremental_interval,
+            "preregistered_criterion_met": incremental_success,
+            "qualification": (
+                "The covariates-only model underperformed the training-fold median; meeting "
+                "this preregistered contrast does not show that covariates improve the panel."
+            ),
+            "post_hoc_panel_minus_combined_mae": panel_combined_interval,
+            "clinical_covariates_improved_panel": bool(
+                panel_combined_interval["lower_95_days"] > 0
+            ),
         },
         "secondary_panel_threshold_classification": {
             "qualification": "Descriptive only; labels are a deterministic 7/8-day threshold.",
@@ -487,6 +510,11 @@ def run_analysis(
             ),
             "balanced_accuracy": balanced_accuracy_score(
                 panel_rows["observed_class"], panel_rows["predicted_class"]
+            ),
+            "majority_class_accuracy": majority_class_accuracy,
+            "accuracy_minus_majority_baseline": float(
+                accuracy_score(panel_rows["observed_class"], panel_rows["predicted_class"])
+                - majority_class_accuracy
             ),
         },
     }

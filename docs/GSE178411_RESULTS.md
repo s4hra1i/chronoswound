@@ -40,13 +40,16 @@ patient-block permutation reruns produced an improvement at least this large, gi
 attainable one-sided Monte Carlo *p*=0.005. The three-part prospective success rule was therefore
 met.
 
-The combined model beat the covariates-only model by 1.55 days (patient-clustered BCa 95% CI
-0.88–2.24), satisfying the separately fixed criterion for molecular value beyond the recorded
-covariates. However, the combined model was worse than the panel-only model (3.03 versus 2.80
-days). Thus the data support signal in the locked molecular panel, but not a claim that adding
-these clinical covariates improves its temporal estimates.
+The preregistered covariates-only versus combined contrast favoured the combined model by 1.55
+days (patient-clustered BCa 95% CI 0.88–2.24). This contrast is weak evidence of incremental
+molecular value because the covariates-only model itself underperformed the training-fold median.
+The more informative post-hoc comparison went in the opposite direction: adding the recorded
+covariates worsened panel MAE from 2.80 to 3.03 days. The data therefore support signal in the
+locked molecular panel, but provide no evidence that these clinical covariates improve its
+temporal estimates.
 
-The panel's descriptive Early/Late threshold accuracy was 75.5% and balanced accuracy 75.1%.
+The panel's descriptive Early/Late threshold accuracy was 75.5% and balanced accuracy 75.1%,
+compared with 55.1% accuracy from always predicting the majority class.
 These values have no success criterion and cannot strengthen or replace the regression result,
 because the classes are a deterministic threshold of the continuous target.
 
@@ -65,6 +68,13 @@ clinical process determining when tissue was collected. Sample-level collection 
 integrity are unavailable despite collection spanning 2002–2018; storage-associated degradation
 could therefore masquerade as temporal structure. Burn severity, treatment and other unrecorded
 clinical factors may also confound the result.
+
+Inner-CV ridge alphas were chosen by giving each inner fold equal weight rather than weighting
+fold MAE by fold size. In the patient-clustered bootstrap, the estimand is the mean sample-level
+error across repeated-CV rows: resampled patients retain all their observations, so patients with
+multiple eligible samples contribute proportionally more rows. Both choices are retained as part
+of the prospectively executed analysis and are stated here rather than changed after observing
+the result.
 
 The correct conclusion is that this locked panel demonstrated useful internal temporal
 resolution for 3–27-day surgical burn specimens under the registered evaluation. It is not a

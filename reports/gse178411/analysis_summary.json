@@ -230,19 +230,30 @@
     },
     "all_three_success_conditions_met": true
   },
-  "incremental_comparison": {
-    "covariates_minus_combined_mae": {
+  "covariate_comparisons": {
+    "preregistered_covariates_minus_combined_mae": {
       "estimate_days": 1.5518058315901677,
       "lower_95_days": 0.8830329874550403,
       "upper_95_days": 2.2422331457483717,
       "replicates": 10000,
       "patients": 39
     },
-    "incremental_molecular_value_established": true
+    "preregistered_criterion_met": true,
+    "qualification": "The covariates-only model underperformed the training-fold median; meeting this preregistered contrast does not show that covariates improve the panel.",
+    "post_hoc_panel_minus_combined_mae": {
+      "estimate_days": -0.22642486443709375,
+      "lower_95_days": -0.5625295509204533,
+      "upper_95_days": 0.05022764964193717,
+      "replicates": 10000,
+      "patients": 39
+    },
+    "clinical_covariates_improved_panel": false
   },
   "secondary_panel_threshold_classification": {
     "qualification": "Descriptive only; labels are a deterministic 7/8-day threshold.",
     "accuracy": 0.7551020408163265,
-    "balanced_accuracy": 0.751473063973064
+    "balanced_accuracy": 0.751473063973064,
+    "majority_class_accuracy": 0.5510204081632653,
+    "accuracy_minus_majority_baseline": 0.20408163265306123
   }
 }

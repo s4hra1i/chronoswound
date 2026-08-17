@@ -20,6 +20,10 @@ The raw SOFT and count files are downloaded locally and are not committed. The m
 `wound_stage` for the first GEO `wound type` characteristic (for example, `Early Wound`) and
 `sample_class` for the second (`wound`, `scar`, or `uninjured`).
 
+The analysis pins the submitted count matrix to SHA-256
+`19622a1b543d9b67481ca5bb13e35f73aafd28fe56f62dde3309e91c37ad0228` and refuses to run
+if the downloaded or cached file does not match it.
+
 The intended primary cohort is not silently encoded in the CSV. Its eligibility rules will be
 timestamped separately before modelling.
 

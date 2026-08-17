@@ -35,6 +35,11 @@ The locked 15-gene ridge model achieved a mean repeated patient-grouped out-of-f
 | Locked 15-gene panel | **2.80 d** | 2.54–3.30 d | 34.3% lower MAE than baseline; prospective rule met |
 | Covariates + panel | 3.03 d | 2.60–3.46 d | Better than covariates alone, but worse than the panel alone |
 
+The preregistered covariates-only versus combined contrast was positive, but the covariates-only
+model itself underperformed the median baseline. It should therefore not be read as strong
+"incremental value" evidence. The more informative comparison is that adding the recorded
+covariates worsened the panel result from 2.80 to 3.03 days.
+
 ![Repeated grouped validation result](reports/gse178411/figures/model_mae_comparison.png)
 
 This is evidence of molecular resolution only for surgically sampled burn wounds in this cohort's **3–27-day** range. It does not validate injuries under 72 hours, other wound mechanisms, post-mortem samples or forensic casework. The target is concentrated at surgical scheduling intervals, only nine patients contribute repeated eligible samples, and collection-year/RNA-integrity confounding cannot be tested.
