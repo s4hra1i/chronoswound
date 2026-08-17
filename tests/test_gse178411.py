@@ -1,4 +1,5 @@
 
+import json
 from pathlib import Path
 
 import numpy as np
@@ -116,3 +117,11 @@ def test_committed_primary_outputs_match_headline_metrics() -> None:
     sensitivity_means = sensitivity.groupby("model")["pooled_mae_days"].mean()
     assert sensitivity_means["median"] == pytest.approx(4.407)
     assert sensitivity_means["panel"] == pytest.approx(3.001254771632365)
+
+    summary = json.loads(
+        (root / "reports/gse178411/analysis_summary.json").read_text()
+    )
+    late = summary["late_range_error_diagnostics"]
+    assert late["samples"] == 7
+    assert late["mae_days"] == pytest.approx(6.2067669102351894)
+    assert late["worst_sample"]["geo_accession"] == "GSM5390609"

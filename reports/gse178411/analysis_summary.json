@@ -268,6 +268,19 @@
     "majority_class_accuracy": 0.5510204081632653,
     "accuracy_minus_majority_baseline": 0.20408163265306123
   },
+  "late_range_error_diagnostics": {
+    "definition": "Post-hoc sample-level diagnostics for observed days >14.",
+    "samples": 7,
+    "mae_days": 6.2067669102351894,
+    "median_absolute_error_days": 4.56525814462611,
+    "maximum_absolute_error_days": 13.22585893296332,
+    "worst_sample": {
+      "geo_accession": "GSM5390609",
+      "observed_days": 27.0,
+      "mean_predicted_days": 13.77414106703668,
+      "absolute_error_days": 13.22585893296332
+    }
+  },
   "planned_panel_only_sensitivity": {
     "qualification": "Planned sensitivity analysis including the sample excluded from the four-model comparison because age was missing. No separate success criterion was specified.",
     "generated_with_current_sensitivity_implementation": true,

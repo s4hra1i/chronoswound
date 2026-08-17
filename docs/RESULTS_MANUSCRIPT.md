@@ -138,5 +138,6 @@ estimator, and must not be used in clinical, legal or forensic casework.
 
 ## References
 
-1. Greco JA III, Pollins AC, Boone BE, Levy SE, Nanney LB. A microarray analysis of temporal gene expression profiles in thermally injured human skin. *Burns*. 2010;36(2):192–204. PMID: 19781859. GEO: GSE8056.
-2. Li N, Li C, Li D, *et al.* Identifying biomarkers for evaluating wound extent and age in the contused muscle of rats using microarray analysis: a pilot study. *PeerJ*. 2021;9:e12709. GEO: GSE162565.
+1. National Center for Biotechnology Information. Gene Expression Omnibus series GSE178411: *Whole-transcriptome analysis illustrates evolving transcriptional human response to injury in acute wounds and scars*. Public 3 June 2024. https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE178411. No linked peer-reviewed primary article was identified on the GEO record as of 17 August 2026.
+2. Greco JA III, Pollins AC, Boone BE, Levy SE, Nanney LB. A microarray analysis of temporal gene expression profiles in thermally injured human skin. *Burns*. 2010;36(2):192–204. PMID: 19781859. GEO: GSE8056.
+3. Li N, Li C, Li D, *et al.* Identifying biomarkers for evaluating wound extent and age in the contused muscle of rats using microarray analysis: a pilot study. *PeerJ*. 2021;9:e12709. GEO: GSE162565.

@@ -132,6 +132,9 @@ pip install -e . --no-deps
 
 The real-data command downloads the NCBI GEO series matrix and platform annotation, then reproduces the exploratory analysis. See the [`GSE8056 dataset card`](docs/GSE8056_DATASET_CARD.md) before interpreting any result.
 
+For the primary cohort's source, processing, selection rules and unresolved provenance limits,
+see the [`GSE178411 dataset card`](docs/GSE178411_DATASET_CARD.md).
+
 The training command creates:
 
 - `reports/synthetic/metrics.json` — synthetic cross-validated and hold-out performance;

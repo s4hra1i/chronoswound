@@ -507,6 +507,41 @@ def run_analysis(
     majority_class_accuracy = float(
         panel_rows["observed_class"].value_counts(normalize=True).max()
     )
+    sample_level_panel = (
+        panel_rows.groupby(
+            ["geo_accession", "patient_id", "observed_days"], as_index=False
+        )["predicted_days"]
+        .mean()
+        .rename(columns={"predicted_days": "mean_predicted_days"})
+    )
+    sample_level_panel["absolute_error_days"] = (
+        sample_level_panel["observed_days"]
+        - sample_level_panel["mean_predicted_days"]
+    ).abs()
+    late_panel = sample_level_panel.loc[
+        sample_level_panel["observed_days"] > 14
+    ].sort_values("absolute_error_days", ascending=False)
+    late_range_error_diagnostics = {
+        "definition": "Post-hoc sample-level diagnostics for observed days >14.",
+        "samples": len(late_panel),
+        "mae_days": float(late_panel["absolute_error_days"].mean()),
+        "median_absolute_error_days": float(
+            late_panel["absolute_error_days"].median()
+        ),
+        "maximum_absolute_error_days": float(
+            late_panel["absolute_error_days"].max()
+        ),
+        "worst_sample": {
+            "geo_accession": str(late_panel.iloc[0]["geo_accession"]),
+            "observed_days": float(late_panel.iloc[0]["observed_days"]),
+            "mean_predicted_days": float(
+                late_panel.iloc[0]["mean_predicted_days"]
+            ),
+            "absolute_error_days": float(
+                late_panel.iloc[0]["absolute_error_days"]
+            ),
+        },
+    }
 
     sensitivity_cohort = prepare_cohort(counts_path, metadata_path, require_age=False)
     sensitivity_predictions, sensitivity_folds, sensitivity_assignments = repeated_nested_cv(
@@ -593,6 +628,7 @@ def run_analysis(
                 - majority_class_accuracy
             ),
         },
+        "late_range_error_diagnostics": late_range_error_diagnostics,
         "planned_panel_only_sensitivity": {
             "qualification": (
                 "Planned sensitivity analysis including the sample excluded from the "
