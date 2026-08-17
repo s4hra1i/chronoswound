@@ -1,2 +1,0 @@
-[console_scripts]
-chronoswound = chronoswound.cli:main
