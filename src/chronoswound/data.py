@@ -27,7 +27,8 @@ def generate_synthetic_cohort(n_samples: int = 360, seed: int = 42) -> pd.DataFr
     donor = rng.integers(1, n_donors + 1, size=n_samples)
     age = np.clip(rng.gamma(shape=1.7, scale=42, size=n_samples), 0.5, 240)
     donor_effects = rng.normal(0, 0.35, n_donors + 1)[donor]
-    noise = lambda scale=0.45: rng.normal(0, scale, n_samples)
+    def noise(scale: float = 0.45) -> np.ndarray:
+        return rng.normal(0, scale, n_samples)
 
     data = {
         "donor_id": [f"D{x:03d}" for x in donor],

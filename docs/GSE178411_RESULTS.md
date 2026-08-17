@@ -48,6 +48,10 @@ covariates worsened panel MAE from 2.80 to 3.03 days. The data therefore support
 locked molecular panel, but provide no evidence that these clinical covariates improve its
 temporal estimates.
 
+The panel-versus-combined contrast and classification majority baseline were added post hoc
+after the reporting audit. They were computed from the stored out-of-fold predictions generated
+by implementation commit `b56ae32`; the modelling pipeline was not rerun.
+
 The panel's descriptive Early/Late threshold accuracy was 75.5% and balanced accuracy 75.1%,
 compared with 55.1% accuracy from always predicting the majority class.
 These values have no success criterion and cannot strengthen or replace the regression result,
