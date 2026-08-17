@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.compose import TransformedTargetRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.pipeline import make_pipeline
@@ -23,6 +23,34 @@ RAT_MATRIX_URL = (
     "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE162nnn/GSE162565/"
     "matrix/GSE162565_series_matrix.txt.gz"
 )
+
+
+def _fit_predict_models(
+    train_x: pd.DataFrame,
+    train_y: pd.Series,
+    test_x: pd.DataFrame,
+    seed: int,
+) -> dict[str, np.ndarray]:
+    """Fit both prespecified models and return predictions for one transfer direction."""
+    forest = RandomForestRegressor(
+        n_estimators=1000,
+        min_samples_leaf=2,
+        max_features=0.7,
+        random_state=seed,
+        n_jobs=-1,
+    )
+    forest.fit(train_x, np.log1p(train_y))
+    ridge = make_pipeline(
+        StandardScaler(),
+        TransformedTargetRegressor(
+            regressor=Ridge(alpha=10.0), func=np.log1p, inverse_func=np.expm1
+        ),
+    )
+    ridge.fit(train_x, train_y)
+    return {
+        "random_forest": np.maximum(0, np.expm1(forest.predict(test_x))),
+        "ridge": np.maximum(0, ridge.predict(test_x)),
+    }
 
 
 def rat_metadata(columns: pd.Index) -> pd.DataFrame:
@@ -91,30 +119,23 @@ def evaluate_cross_severity(
     for train_severity, test_severity in [("mild", "severe"), ("severe", "mild")]:
         train = metadata.severity == train_severity
         test = metadata.severity == test_severity
-        model = RandomForestRegressor(
-            n_estimators=1000, min_samples_leaf=2, max_features=0.7,
-            random_state=seed, n_jobs=-1,
-        )
-        model.fit(expression.loc[train], np.log1p(metadata.loc[train, "hours"]))
-        prediction = np.maximum(0, np.expm1(model.predict(expression.loc[test])))
         truth = metadata.loc[test, "hours"].to_numpy()
-        ridge = make_pipeline(
-            StandardScaler(),
-            TransformedTargetRegressor(
-                regressor=Ridge(alpha=10.0), func=np.log1p, inverse_func=np.expm1
-            ),
+        model_predictions = _fit_predict_models(
+            expression.loc[train],
+            metadata.loc[train, "hours"],
+            expression.loc[test],
+            seed,
         )
-        ridge.fit(expression.loc[train], metadata.loc[train, "hours"])
-        ridge_prediction = np.maximum(0, ridge.predict(expression.loc[test]))
         baseline = np.repeat(metadata.loc[train, "hours"].median(), len(truth))
         key = f"train_{train_severity}_test_{test_severity}"
         direction_metrics[key] = {
-            "random_forest": _metrics(truth, prediction),
-            "ridge": _metrics(truth, ridge_prediction),
+            "random_forest": _metrics(truth, model_predictions["random_forest"]),
+            "ridge": _metrics(truth, model_predictions["ridge"]),
             "training_median_baseline": _metrics(truth, baseline),
         }
         for model_name, model_prediction in [
-            ("Random forest", prediction), ("Ridge", ridge_prediction)
+            ("Random forest", model_predictions["random_forest"]),
+            ("Ridge", model_predictions["ridge"]),
         ]:
             for sample, observed, predicted_value in zip(
                 metadata.index[test], truth, model_prediction
@@ -131,7 +152,7 @@ def evaluate_cross_severity(
         "accession": "GSE162565",
         "organism": "Rattus norvegicus",
         "tissue": "skeletal muscle",
-        "n_individual_wounded_animals": int(len(metadata)),
+        "n_individual_wounded_animals": len(metadata),
         "n_fixed_markers": int(expression.shape[1]),
         "markers": list(expression.columns),
         "directions": direction_metrics,

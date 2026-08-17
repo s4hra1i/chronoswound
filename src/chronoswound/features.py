@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -10,7 +12,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 class PhaseScoreTransformer(BaseEstimator, TransformerMixin):
     """Add mean expression scores for broad wound-healing phases."""
 
-    phase_genes = {
+    phase_genes: ClassVar[dict[str, list[str]]] = {
         "inflammation_score": ["IL6", "TNF", "CXCL8", "MPO"],
         "repair_score": ["CD68", "VEGFA", "MMP9"],
         "remodelling_score": ["COL1A1", "TGFB1"],

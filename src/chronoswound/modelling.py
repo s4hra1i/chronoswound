@@ -47,6 +47,8 @@ def _candidate_models(seed: int) -> dict[str, Pipeline]:
 
 
 def train_and_evaluate(df: pd.DataFrame, seed: int = 42, coverage: float = 0.90) -> TrainingResult:
+    if not 0 < coverage < 1:
+        raise ValueError("coverage must be strictly between 0 and 1")
     validate_dataset(df)
     X = df[BASE_FEATURES]
     y = df["wound_age_hours"].to_numpy()
@@ -58,7 +60,10 @@ def train_and_evaluate(df: pd.DataFrame, seed: int = 42, coverage: float = 0.90)
     y_dev, y_test = y[dev_idx], y[test_idx]
     groups_dev = groups[dev_idx]
 
-    calibrator = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed + 1)
+    # Keep calibration donors separate and deploy the same fitted model whose
+    # residuals define the interval. Refitting after calibration would invalidate
+    # the split-conformal guarantee.
+    calibrator = GroupShuffleSplit(n_splits=1, test_size=0.3, random_state=seed + 1)
     train_rel, cal_rel = next(calibrator.split(X_dev, y_dev, groups_dev))
     cv = GroupKFold(n_splits=5)
     candidates = _candidate_models(seed)
@@ -72,9 +77,9 @@ def train_and_evaluate(df: pd.DataFrame, seed: int = 42, coverage: float = 0.90)
     model.fit(X_dev.iloc[train_rel], y_dev[train_rel])
     cal_pred = np.maximum(0, model.predict(X_dev.iloc[cal_rel]))
     residuals = np.abs(y_dev[cal_rel] - cal_pred)
-    radius = float(np.quantile(residuals, coverage, method="higher"))
+    quantile_level = min(1.0, np.ceil((len(residuals) + 1) * coverage) / len(residuals))
+    radius = float(np.quantile(residuals, quantile_level, method="higher"))
 
-    model.fit(X_dev, y_dev)
     predicted = np.maximum(0, model.predict(X_test))
     lower = np.maximum(0, predicted - radius)
     upper = predicted + radius
@@ -87,8 +92,13 @@ def train_and_evaluate(df: pd.DataFrame, seed: int = 42, coverage: float = 0.90)
         "target_interval_coverage": coverage,
         "observed_interval_coverage": float(np.mean((y_test >= lower) & (y_test <= upper))),
         "interval_radius_hours": radius,
-        "n_development": int(len(dev_idx)),
-        "n_test": int(len(test_idx)),
+        "mean_interval_width_hours": float(np.mean(upper - lower)),
+        "median_interval_width_hours": float(np.median(upper - lower)),
+        "calibration_quantile_level": float(quantile_level),
+        "n_model_training": int(len(train_rel)),
+        "n_calibration": int(len(cal_rel)),
+        "n_development": len(dev_idx),
+        "n_test": len(test_idx),
     }
     predictions = pd.DataFrame({"donor_id": groups[test_idx], "observed_hours": y_test, "predicted_hours": predicted, "lower_hours": lower, "upper_hours": upper})
 

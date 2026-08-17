@@ -4,13 +4,13 @@ import pandas as pd
 import pytest
 
 from chronoswound.gse178411 import (
-    PANEL,
     COUNTS_SHA256,
+    PANEL,
     AnalysisConfig,
     _permuted_outcome,
     bca_cluster_interval,
-    repeated_nested_cv,
     download_counts,
+    repeated_nested_cv,
 )
 
 
