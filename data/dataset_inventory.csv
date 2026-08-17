@@ -1,3 +1,4 @@
 accession,organism,tissue,injury,unit_of_analysis,n_arrays,time_points,role,principal_limitation
+GSE178411,Homo sapiens,skin burn wound,burn injury,individual sample grouped by patient,108,"3-27d primary eligible range",primary internally validated regression,"single cohort; surgical scheduling, storage-era and RNA-quality confounding"
 GSE8056,Homo sapiens,skin burn margin,thermal injury,pooled RNA from five specimens,12,"normal; 0-3d; 4-7d; >7d",human exploratory and time-bin stress test,pooling and coarse intervals
 GSE162565,Rattus norvegicus,skeletal muscle,controlled contusion,individual animal,33,"0; 1h; 3h; 24h; 48h; 168h",cross-severity validation,cross-species and cross-tissue

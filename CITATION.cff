@@ -5,6 +5,6 @@ type: software
 authors:
   - family-names: "Ali"
     given-names: "S."
-version: 0.3.0
+version: 0.3.1
 date-released: 2026-08-17
 license: MIT

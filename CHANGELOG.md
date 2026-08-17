@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.1 — 2026-08-17
+
+- Completed the planned 50-sample panel-only sensitivity analysis.
+- Updated the Streamlit explorer to include the primary human analysis.
+- Added late-range error diagnostics from stored out-of-fold predictions.
+- Added GSE178411 to the dataset inventory and risk-of-bias register.
+- Reconciled the results manuscript with the primary prospective analysis.
+- Clarified that primary uncertainty estimates concern population-level performance rather
+  than calibrated individual prediction intervals.
+
 ## 0.3.0 — 2026-08-17
 
 - Published the GSE178411 analysis protocol before expression–outcome modelling.

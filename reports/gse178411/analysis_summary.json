@@ -8,7 +8,9 @@
     "metrics": [
       "post_hoc_panel_minus_combined_mae",
       "majority_class_accuracy",
-      "accuracy_minus_majority_baseline"
+      "accuracy_minus_majority_baseline",
+      "sample_level_panel_predictions",
+      "late_range_error_diagnostics"
     ]
   },
   "cohort": {
@@ -265,5 +267,22 @@
     "balanced_accuracy": 0.751473063973064,
     "majority_class_accuracy": 0.5510204081632653,
     "accuracy_minus_majority_baseline": 0.20408163265306123
+  },
+  "planned_panel_only_sensitivity": {
+    "qualification": "Planned sensitivity analysis including the sample excluded from the four-model comparison because age was missing. No separate success criterion was specified.",
+    "generated_with_current_sensitivity_implementation": true,
+    "primary_pipeline_rerun": false,
+    "software": {
+      "python": "3.12.13",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scipy": "1.17.0",
+      "scikit_learn": "1.8.0"
+    },
+    "samples": 50,
+    "patients": 40,
+    "median_mae_days": 4.407,
+    "panel_mae_days": 3.001254771632365,
+    "baseline_minus_panel_mae_days": 1.405745228367635
   }
 }

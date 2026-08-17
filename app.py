@@ -1,4 +1,4 @@
-"""Interactive research explorer for all three ChronosWound evidence tracks."""
+"""Interactive research explorer for the four ChronosWound evidence tracks."""
 
 import json
 from pathlib import Path
@@ -13,9 +13,44 @@ st.set_page_config(page_title="ChronosWound", page_icon="🧬", layout="wide")
 st.title("ChronosWound research explorer")
 st.warning("Research prototype only—not a clinical or forensic instrument.")
 
-real_tab, cross_tab, demo_tab = st.tabs(
-    ["Human transcriptomics", "Cross-context validation", "Synthetic estimator"]
+primary_tab, real_tab, cross_tab, demo_tab = st.tabs(
+    [
+        "Primary human validation",
+        "Exploratory human arrays",
+        "Cross-context validation",
+        "Synthetic demonstration",
+    ]
 )
+
+with primary_tab:
+    primary_summary = Path("reports/gse178411/analysis_summary.json")
+    primary_figure = Path("reports/gse178411/figures/model_mae_comparison.png")
+    if primary_summary.exists():
+        primary = json.loads(primary_summary.read_text())
+        model_metrics = primary["model_mae_days"]
+        comparison = primary["primary_comparison"]
+        a, b, c = st.columns(3)
+        a.metric("Locked-panel MAE", f"{model_metrics['panel']['mean']:.2f} days")
+        b.metric("Training-median MAE", f"{model_metrics['median']['mean']:.2f} days")
+        c.metric(
+            "Relative MAE reduction",
+            f"{100 * comparison['relative_mae_reduction']:.1f}%",
+        )
+        interval = comparison["baseline_minus_panel_mae"]
+        st.write(
+            "Patient-clustered improvement: "
+            f"{interval['estimate_days']:.2f} days "
+            f"(95% CI {interval['lower_95_days']:.2f}–"
+            f"{interval['upper_95_days']:.2f})."
+        )
+        if primary_figure.exists():
+            st.image(str(primary_figure))
+        st.caption(
+            "Internal validation in 49 samples from 39 patients. "
+            "This is not external, clinical or forensic validation."
+        )
+    else:
+        st.info("Run `chronoswound gse178411` to populate this tab.")
 
 with real_tab:
     human_summary = Path("reports/gse8056/analysis_summary.json")
@@ -56,9 +91,12 @@ with cross_tab:
         st.info("Run `chronoswound cross-context` to populate this tab.")
 
 with demo_tab:
-    model_path = Path("reports/model.joblib")
+    model_path = Path("reports/synthetic/model.joblib")
     if not model_path.exists():
-        st.info("Run the synthetic training workflow first to create reports/model.joblib.")
+        st.info(
+            "Run the synthetic training workflow first to create "
+            "reports/synthetic/model.joblib."
+        )
     else:
         artifact = joblib.load(model_path)
         st.sidebar.header("Illustrative measurements")

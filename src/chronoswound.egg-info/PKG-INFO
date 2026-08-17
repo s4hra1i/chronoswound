@@ -1,3 +1,26 @@
+Metadata-Version: 2.4
+Name: chronoswound
+Version: 0.3.1
+Summary: Interpretable multimodal wound-age estimation research prototype
+Author: S. Ali
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: joblib>=1.3
+Requires-Dist: matplotlib>=3.8
+Requires-Dist: numpy>=1.24
+Requires-Dist: pandas>=2.0
+Requires-Dist: scikit-learn>=1.6
+Requires-Dist: scipy>=1.10
+Requires-Dist: seaborn>=0.13
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: ruff>=0.4; extra == "dev"
+Provides-Extra: app
+Requires-Dist: streamlit>=1.32; extra == "app"
+Dynamic: license-file
+
 # ChronosWound
 
 ### A prospective test of transcriptomic resolution for subacute burn-wound age
@@ -120,14 +143,6 @@ chronoswound real-analysis --output reports/gse8056
 chronoswound cross-context --output reports/gse162565
 chronoswound gse178411 --output reports/gse178411
 pytest
-```
-
-For exact reproduction of the archived v0.3.1 GSE178411 outputs under Python 3.12, install the
-pinned scientific environment before installing the local package:
-
-```bash
-pip install -r requirements-analysis.txt
-pip install -e . --no-deps
 ```
 
 The real-data command downloads the NCBI GEO series matrix and platform annotation, then reproduces the exploratory analysis. See the [`GSE8056 dataset card`](docs/GSE8056_DATASET_CARD.md) before interpreting any result.

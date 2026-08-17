@@ -104,7 +104,9 @@ def load_counts(path: Path) -> tuple[pd.DataFrame, pd.Series]:
     return panel.T, library_sizes
 
 
-def prepare_cohort(counts_path: Path, metadata_path: Path) -> pd.DataFrame:
+def prepare_cohort(
+    counts_path: Path, metadata_path: Path, require_age: bool = True
+) -> pd.DataFrame:
     """Apply the prospectively fixed eligibility rules and sample-local log-CPM."""
     panel_counts, library_sizes = load_counts(counts_path)
     expression = np.log2(panel_counts.div(library_sizes, axis=0) * 1_000_000 + 0.5)
@@ -113,17 +115,27 @@ def prepare_cohort(counts_path: Path, metadata_path: Path) -> pd.DataFrame:
 
     metadata = pd.read_csv(metadata_path)
     metadata["sample_label"] = metadata["title"].str.split(":", n=1).str[0]
-    eligible = metadata.loc[
+    eligibility = (
         metadata["sample_class"].eq("wound")
         & metadata["wound_stage"].isin(["Early Wound", "Late wound"])
         & metadata["days_since_injury"].notna()
-        & metadata["age"].notna()
-    ].copy()
+    )
+    if require_age:
+        eligibility &= metadata["age"].notna()
+    eligible = metadata.loc[eligibility].copy()
     cohort = eligible.merge(expression, on="sample_label", how="left", validate="one_to_one")
     if cohort[PANEL].isna().any().any():
         raise ValueError("Eligible metadata samples did not all match the count matrix")
-    if len(cohort) != 49 or cohort["patient_id"].nunique() != 39:
-        raise ValueError("Prospective complete-case cohort must contain 49 samples/39 patients")
+    expected_samples = 49 if require_age else 50
+    expected_patients = 39 if require_age else 40
+    if (
+        len(cohort) != expected_samples
+        or cohort["patient_id"].nunique() != expected_patients
+    ):
+        raise ValueError(
+            "Unexpected prospective cohort size: "
+            f"expected {expected_samples} samples/{expected_patients} patients"
+        )
     cohort["patient_id"] = cohort["patient_id"].astype(int)
     cohort["days_since_injury"] = cohort["days_since_injury"].astype(float)
     return cohort.sort_values(["patient_id", "geo_accession"]).reset_index(drop=True)
@@ -183,6 +195,7 @@ def repeated_nested_cv(
     config: AnalysisConfig,
     outcome: np.ndarray | None = None,
     retain_rows: bool = True,
+    models: tuple[str, ...] = ("covariates", "panel", "combined"),
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Run the four-model repeated nested grouped evaluation."""
     work = cohort.copy()
@@ -205,7 +218,7 @@ def repeated_nested_cv(
                 "median": np.repeat(train["days_since_injury"].median(), len(test))
             }
             selected_alphas: dict[str, float | None] = {"median": None}
-            for model in ("covariates", "panel", "combined"):
+            for model in models:
                 pred, alpha = _fit_predict(
                     model,
                     train,
@@ -408,6 +421,49 @@ def _save_figure(repetition_metrics: pd.DataFrame, output: Path) -> None:
     plt.close(fig)
 
 
+def _save_panel_diagnostics(predictions: pd.DataFrame, output_dir: Path) -> pd.DataFrame:
+    """Save post-hoc sample-level diagnostics from retained panel OOF predictions."""
+    panel = predictions.loc[predictions["model"].eq("panel")]
+    sample_level = (
+        panel.groupby(
+            ["geo_accession", "patient_id", "observed_days"], as_index=False
+        )["predicted_days"]
+        .mean()
+        .rename(columns={"predicted_days": "mean_predicted_days"})
+    )
+    sample_level["absolute_error_days"] = (
+        sample_level["observed_days"] - sample_level["mean_predicted_days"]
+    ).abs()
+    sample_level.to_csv(output_dir / "sample_level_panel_predictions.csv", index=False)
+
+    figure_dir = output_dir / "figures"
+    figure_dir.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.scatter(sample_level["observed_days"], sample_level["mean_predicted_days"], alpha=0.8)
+    limits = [
+        min(sample_level["observed_days"].min(), sample_level["mean_predicted_days"].min()),
+        max(sample_level["observed_days"].max(), sample_level["mean_predicted_days"].max()),
+    ]
+    ax.plot(limits, limits, linestyle="--", color="black", linewidth=1)
+    ax.set(xlabel="Observed days", ylabel="Mean OOF predicted days")
+    ax.set_title("Locked-panel sample-level predictions")
+    ax.grid(alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(figure_dir / "panel_predicted_vs_observed.png", dpi=180)
+    plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    ax.scatter(sample_level["observed_days"], sample_level["absolute_error_days"], alpha=0.8)
+    ax.set(xlabel="Observed days", ylabel="Absolute error (days)")
+    ax.set_title("Locked-panel error across the observed range")
+    ax.grid(alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(figure_dir / "panel_error_by_observed_day.png", dpi=180)
+    plt.close(fig)
+    return sample_level
+
+
 def run_analysis(
     counts_path: Path,
     metadata_path: Path,
@@ -452,9 +508,29 @@ def run_analysis(
         panel_rows["observed_class"].value_counts(normalize=True).max()
     )
 
+    sensitivity_cohort = prepare_cohort(counts_path, metadata_path, require_age=False)
+    sensitivity_predictions, sensitivity_folds, sensitivity_assignments = repeated_nested_cv(
+        sensitivity_cohort, config, models=("panel",)
+    )
+    sensitivity_repetitions = _repetition_metrics(sensitivity_predictions)
+    sensitivity_means = sensitivity_repetitions.groupby("model")[
+        "pooled_mae_days"
+    ].mean()
+
     summary: dict[str, object] = {
         "protocol_tag": PROTOCOL_TAG,
         "generated_from_commit": os.environ.get("CHRONOSWOUND_COMMIT_SHA", "not-recorded"),
+        "derived_metrics_provenance": {
+            "source": "out-of-fold predictions produced by the current analysis run",
+            "analysis_status": "post hoc reporting diagnostics",
+            "metrics": [
+                "post_hoc_panel_minus_combined_mae",
+                "majority_class_accuracy",
+                "accuracy_minus_majority_baseline",
+                "sample_level_panel_predictions",
+                "late_range_error_diagnostics",
+            ],
+        },
         "cohort": {
             "samples": len(cohort),
             "patients": cohort["patient_id"].nunique(),
@@ -517,6 +593,29 @@ def run_analysis(
                 - majority_class_accuracy
             ),
         },
+        "planned_panel_only_sensitivity": {
+            "qualification": (
+                "Planned sensitivity analysis including the sample excluded from the "
+                "four-model comparison because age was missing. No separate success "
+                "criterion was specified."
+            ),
+            "generated_with_current_sensitivity_implementation": True,
+            "primary_pipeline_rerun": True,
+            "software": {
+                "python": platform.python_version(),
+                "numpy": np.__version__,
+                "pandas": pd.__version__,
+                "scipy": scipy.__version__,
+                "scikit_learn": sklearn.__version__,
+            },
+            "samples": len(sensitivity_cohort),
+            "patients": sensitivity_cohort["patient_id"].nunique(),
+            "median_mae_days": float(sensitivity_means["median"]),
+            "panel_mae_days": float(sensitivity_means["panel"]),
+            "baseline_minus_panel_mae_days": float(
+                sensitivity_means["median"] - sensitivity_means["panel"]
+            ),
+        },
     }
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -525,10 +624,23 @@ def run_analysis(
     assignments.to_csv(output_dir / "fold_assignments.csv", index=False)
     repetition_metrics.to_csv(output_dir / "repetition_metrics.csv", index=False)
     null.to_csv(output_dir / "permutation_null.csv", index=False)
+    sensitivity_predictions.to_csv(
+        output_dir / "sensitivity_oof_predictions.csv", index=False
+    )
+    sensitivity_folds.to_csv(
+        output_dir / "sensitivity_fold_metrics.csv", index=False
+    )
+    sensitivity_assignments.to_csv(
+        output_dir / "sensitivity_fold_assignments.csv", index=False
+    )
+    sensitivity_repetitions.to_csv(
+        output_dir / "sensitivity_repetition_metrics.csv", index=False
+    )
     cohort[["geo_accession", "patient_id", "days_since_injury"]].to_csv(
         output_dir / "analysis_cohort.csv", index=False
     )
     with (output_dir / "analysis_summary.json").open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
     _save_figure(repetition_metrics, output_dir / "figures" / "model_mae_comparison.png")
+    _save_panel_diagnostics(predictions, output_dir)
     return summary

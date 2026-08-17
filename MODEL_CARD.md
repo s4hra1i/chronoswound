@@ -2,7 +2,7 @@
 
 ## System
 
-ChronosWound 0.3.0 contains four distinct components. They must not be conflated.
+ChronosWound 0.3.1 contains four distinct components. They must not be conflated.
 
 | Component | Data | Intended purpose | Valid claim |
 |---|---|---|---|
@@ -27,6 +27,11 @@ success rule: paired patient-clustered BCa improvement 1.46 days (95% CI 0.68–
 full-pipeline patient-block permutation *p*=0.005. Covariates alone achieved 4.58 days; combining
 them with the panel achieved 3.03 days, worse than the panel alone.
 
+The planned 50-sample panel-only sensitivity analysis achieved MAE of 3.00 days versus 4.41
+days for its training-fold median. Post-hoc sample-level diagnostics exposed sparse late-range
+performance: the sole 27-day sample had a mean out-of-fold prediction of approximately 13.8
+days, and individual 19- and 22-day samples had errors above eight days.
+
 Human leave-one-array-out accuracy was 83.3% with a 51.6–97.9% exact 95% interval. Injured-only accuracy was 88.9% with a 51.8–99.7% interval. These intervals demonstrate severe statistical uncertainty.
 
 Ridge cross-severity rat MAE was 22.4 hours for mild-to-severe transfer and 31.7 hours for severe-to-mild transfer, against a 42.4-hour median baseline. Random-forest MAEs were 32.4 and 37.3 hours; its latter direction had negative R², demonstrating material large-error risk and the value of a simpler benchmark.
@@ -37,6 +42,9 @@ There is no external human validation, blinded assessment, calibration by demogr
 RNA-degradation challenge, batch-transfer study, independent tissue-site validation or
 comparison with forensic experts. GSE178411 provides no evidence below three days, and
 performance for post-mortem wounds is entirely unknown.
+
+The primary GSE178411 uncertainty estimates apply to cohort-level performance comparisons. They
+are not calibrated prediction intervals for individual wounds.
 
 ## Human oversight
 

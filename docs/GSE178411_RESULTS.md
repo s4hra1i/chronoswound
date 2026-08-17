@@ -57,6 +57,29 @@ compared with 55.1% accuracy from always predicting the majority class.
 These values have no success criterion and cannot strengthen or replace the regression result,
 because the classes are a deterministic threshold of the continuous target.
 
+## Planned panel-only sensitivity analysis
+
+The protocol specified a panel-only sensitivity analysis including `GSM5390619`, which was
+excluded from the four-model comparison because age was missing. The sensitivity cohort
+contained 50 samples from 40 patients. Using the same locked panel, 20 seeds and grouped nested
+procedure, panel MAE was 3.00 days versus 4.41 days for the training-fold median, an improvement
+of 1.41 days. No separate success criterion was specified. This sensitivity analysis does not
+alter or replace the registered 49-sample primary estimand.
+
+## Error distribution across the observed range
+
+Performance was not uniform across the 3–27-day range. The cohort is concentrated at earlier
+surgical intervals, and very few observations occur after day 14. Averaging each sample's
+out-of-fold predictions across the 20 registered repetitions exposed substantial regression
+towards the centre of the cohort for several late wounds. The sole 27-day sample had a mean
+prediction of approximately 13.8 days, while individual samples at 19 and 22 days had errors
+above eight days.
+
+The mean MAE should therefore not be interpreted as comparable resolution throughout the full
+observed range. External validation must deliberately recruit sufficient samples at the late
+end of the intended range. These diagnostics were computed post hoc from the stored predictions;
+the primary pipeline was not rerun.
+
 ## Interpretation
 
 The result clears a deliberately conservative, prospectively fixed threshold and is stable
@@ -94,3 +117,8 @@ validated wound-age estimator and must not be used in real clinical, legal or fo
 - `permutation_null.csv`: all 199 full-pipeline null improvements;
 - `analysis_cohort.csv`: accessions, patient groups and eligible outcomes;
 - `figures/model_mae_comparison.png`: across-seed model comparison.
+- `sensitivity_oof_predictions.csv`: planned 50-sample panel-only sensitivity predictions;
+- `sensitivity_repetition_metrics.csv`: sensitivity MAE for every registered seed;
+- `sample_level_panel_predictions.csv`: post-hoc mean panel prediction and error per sample;
+- `figures/panel_predicted_vs_observed.png`: sample-level prediction diagnostic;
+- `figures/panel_error_by_observed_day.png`: absolute error across the observed range.

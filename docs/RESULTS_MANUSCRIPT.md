@@ -1,67 +1,142 @@
-# ChronosWound: an uncertainty-aware, cross-context analysis of temporal transcription after injury
+# ChronosWound: prospective internal evaluation of a locked transcript panel for subacute burn-wound age
 
 ## Abstract
 
-Estimating the interval between injury and examination remains difficult because wound repair is dynamic, heterogeneous and affected by injury severity and patient characteristics. This project evaluated whether a small, biologically fixed transcript panel contains temporal information across two public microarray studies. GSE8056 comprised twelve human arrays representing pooled burn-margin samples collected 0–3, 4–7 or more than 7 days after injury and normal skin. A locked 15-gene panel spanning inflammatory recruitment, myeloid activity, angiogenesis, matrix turnover and re-epithelialisation was assessed without data-driven feature selection. Leave-one-array-out nearest-centroid classification achieved 83.3% accuracy across four groups (95% exact CI 51.6–97.9%; permutation *p*=0.001). After controls were removed, accuracy across the three injured intervals was 88.9% (95% CI 51.8–99.7%), although uncertainty remained substantial. Complementary analysis used GSE162565, comprising individual rat muscle contusions at 1, 3, 24, 48 and 168 hours. Training on mild injuries and testing severe injuries produced a mean absolute error (MAE) of 22.4 hours with ridge regression, compared with 32.4 hours for a random forest and 42.4 hours for the training-median baseline. Reversing the direction yielded MAEs of 31.7, 37.3 and 42.4 hours, respectively. These results support temporal signal in a compact injury-response panel but do not validate patient-level forensic estimation.
+ChronosWound evaluates whether a biologically fixed transcript panel contains temporal
+information after injury while making small-sample failure modes explicit. The primary analysis
+used 49 surgically sampled human burn wounds from 39 patients in GSE178411, spanning 3–27 days
+after injury. Its protocol, cohort rules, predictors, models and success criterion were tagged
+before expression–outcome modelling. A locked 15-gene ridge model achieved mean repeated
+patient-grouped out-of-fold mean absolute error (MAE) of 2.80 days, compared with 4.26 days for
+the training-fold median. The paired improvement was 1.46 days (patient-clustered BCa 95% CI
+0.68–2.43), and none of 199 full-pipeline patient-block permutations matched the observed result
+(one-sided Monte Carlo *p*=0.005). A planned panel-only sensitivity analysis including the
+sample excluded for missing age contained 50 samples from 40 patients and produced panel MAE
+3.00 days versus 4.41 days for the training-fold median. Earlier pooled human arrays and rat
+cross-severity transfer are retained as exploratory evidence. The primary result demonstrates
+internal temporal resolution in one cohort, not external, clinical or forensic validation.
 
 ## Introduction
 
-Wound age is not encoded by a single molecular clock. Haemostasis, inflammation, proliferation and remodelling overlap, while anatomical site, injury mechanism, severity, infection, medication and sampling conditions can alter their timing. Molecular approaches are nevertheless attractive because coordinated transcriptional changes may provide information beyond morphology alone.
+Wound repair is not a single molecular clock. Inflammation, cell recruitment, angiogenesis,
+matrix turnover and re-epithelialisation overlap, while anatomy, severity, treatment, infection,
+health and sample handling can change their timing. An apparently accurate model may therefore
+learn patient identity, batch structure or clinical scheduling rather than elapsed biological
+time.
 
-Greco and colleagues profiled viable human burn margins and reported extensive expression changes, including prolonged inflammatory activity and extracellular-matrix perturbation. Their deposited GSE8056 dataset provides rare human temporal wound data but pools five specimens per array. Li and colleagues subsequently profiled individual rat muscle contusions at five exact post-injury times under two severities in GSE162565, explicitly examining biomarkers for wound extent and age. Together, these studies allow two distinct questions: whether a compact panel separates broad human burn intervals, and whether temporal prediction transfers when injury severity changes in a controlled model.
-
-The project deliberately separates exploratory discovery, locked-panel evaluation and synthetic software demonstration. The primary aim was not to maximise accuracy, but to test whether interpretable temporal information survives validation procedures designed to expose small-sample uncertainty.
+ChronosWound was designed around that problem. It separates a prospectively specified primary
+human analysis from earlier exploratory human and animal work, keeps repeated observations from
+the same patient together, fits preprocessing within training data and retains negative and
+asymmetric transfer results.
 
 ## Methods
 
-### Human dataset and preprocessing
+### Primary human cohort
 
-Processed RMA expression values and GPL570 annotations were downloaded directly from NCBI GEO. Probe intensities were transformed as log₂(*x*+1), mapped to unambiguous gene symbols and collapsed by median expression when multiple probes represented the same gene. The dataset contained three pooled arrays per group: 0–3 days, 4–7 days, >7 days and normal skin.
+GSE178411 contains 108 human skin RNA-seq samples. The registered complete-case comparison
+included wound samples labelled Early or Late wound, with a numeric day since injury and
+recorded age. This produced 49 samples from 39 patients over 3–27 days. The target occurred on
+16 distinct days and was concentrated around surgical scheduling intervals. Only nine patients
+contributed repeated eligible samples; the remaining 31 were singletons.
 
-PCA used the 1,000 most variable genes after per-gene standardisation. Exploratory temporal differences were assessed by one-way ANOVA across the four groups, followed by Benjamini–Hochberg false-discovery-rate correction. These rankings were never used as validation features.
+The locked panel comprised `IL6`, `TNF`, `CXCL8`, `CXCL2`, `PTGS2`, `MPO`, `CD68`, `CCL2`,
+`MMP9`, `VEGFA`, `TGFB1`, `COL1A1`, `FN1`, `SERPINE1` and `KRT14`. Counts were converted using
+sample-local library-size CPM followed by `log2(CPM + 0.5)`. No cohort-wide normalisation,
+outcome-informed filtering or global gene-wise centring was fitted before splitting.
 
-### Locked marker panel
+Four models used identical outer folds: a training-fold median, covariates-only ridge, locked
+panel ridge and covariates-plus-panel ridge. Five-fold patient-grouped evaluation was repeated
+over 20 fixed seeds. Ridge alpha selection, encoding and scaling occurred inside each outer
+training set using inner grouped cross-validation.
 
-The fixed panel represented acute cytokine signalling (`IL6`, `TNF`, `CXCL8`, `CXCL2`, `PTGS2`), neutrophil and myeloid activity (`MPO`, `CD68`, `CCL2`), matrix degradation (`MMP9`), angiogenesis and repair (`VEGFA`, `TGFB1`), matrix deposition (`COL1A1`, `FN1`, `SERPINE1`) and epidermal response (`KRT14`). Fourteen were available after unambiguous GPL570 mapping.
+The registered success rule required all of: at least 20% lower mean repeated-CV MAE than the
+training-median baseline; a patient-clustered BCa 95% interval for the paired improvement wholly
+above zero; and a one-sided full-pipeline patient-block permutation *p* below 0.05.
 
-Nearest-centroid classification was assessed by leaving out each array once. Standardisation was fitted inside each training fold. Accuracy, balanced accuracy, an exact binomial 95% interval and a 999-permutation *p*-value were reported. A prespecified sensitivity analysis removed normal controls and classified only the three injury intervals.
+### Planned sensitivity analysis
 
-### Cross-context analysis
+The protocol also specified a panel-only sensitivity analysis including one wound excluded from
+the four-model comparison because age was missing. This analysis used 50 samples from 40
+patients, the same locked panel, seeds and grouped nested procedure, and compared the panel with
+the training-fold median. No separate success criterion was specified.
 
-GSE162565 contained three controls and 30 individually sampled wounded rats: three biological replicates at 1, 3, 24, 48 and 168 hours under mild and severe muscle contusion. Fourteen panel genes mapped unambiguously to GPL17117; `CXCL8` was omitted because rodents lack a direct one-to-one orthologue. Fixed ridge and random-forest regressors were trained on one severity and evaluated unchanged on the other. MAE, bootstrap 95% intervals, RMSE, R² and performance against a training-median baseline were retained.
+### Exploratory tracks
+
+GSE8056 contains twelve pooled human burn-margin microarrays in three injury-time bins and a
+normal-skin group. Its array, not an individual patient, is the unit of analysis. GSE162565
+contains 30 individually sampled wounded rats under mild and severe muscle contusion at five
+exact times. These tracks test broad separability and sensitivity to biological context; neither
+is external validation of the primary human estimator.
 
 ## Results
 
-### Human exploratory analysis
+### Primary analysis
 
-After annotation and probe collapsing, 20,848 genes across twelve arrays remained. PCA clearly separated normal skin from injured samples, while injured time groups showed partial rather than complete temporal ordering. The exploratory ANOVA identified 636 genes at FDR <0.05. This count should be interpreted cautiously because the arrays are pooled and the groups differ in more than elapsed time.
+| Model | Mean pooled MAE | Range across 20 seeds |
+|---|---:|---:|
+| Training-fold median | 4.26 d | 4.08–4.63 d |
+| Covariates only | 4.58 d | 4.30–5.05 d |
+| Locked panel | **2.80 d** | 2.54–3.30 d |
+| Covariates + panel | 3.03 d | 2.60–3.46 d |
 
-The locked panel correctly classified ten of twelve arrays (83.3%; exact 95% CI 51.6–97.9%). All three normal arrays, all three 0–3-day arrays and two of three 4–7-day and >7-day arrays were correctly assigned. Balanced accuracy was 83.3%, exceeding the permutation null (*p*=0.001).
+The locked panel reduced MAE by 34.3%. Its paired improvement over the training-fold median was
+1.46 days (patient-clustered BCa 95% CI 0.68–2.43), with a full-pipeline patient-block
+permutation *p*=0.005. All three registered success conditions were met.
 
-Normal tissue did not solely drive the result. When controls were excluded and the model was refitted within each leave-one-out iteration, eight of nine wounded arrays were correctly classified (88.9%; exact 95% CI 51.8–99.7%). All injured-only predictions fell within the correct or an adjacent temporal interval. The very wide intervals remain more important than the point estimates.
+The preregistered covariates-only versus combined contrast favoured the combined model, but the
+covariates-only model underperformed the median baseline. A more informative post-hoc comparison
+showed that adding the recorded covariates worsened panel MAE from 2.80 to 3.03 days. These data
+do not show that the available clinical covariates improve the panel.
 
-### Cross-severity results
+The planned 50-sample panel-only sensitivity produced MAE of 3.00 days versus 4.41 days for the
+training-fold median, an improvement of 1.41 days. It did not alter the registered 49-sample
+primary estimand or result.
 
-Training on mild contusions and testing severe contusions produced a ridge MAE of 22.4 hours (bootstrap 95% CI 8.6–41.1), RMSE of 38.7 hours and R² of 0.61. The random-forest MAE was 32.4 hours (95% CI 13.2–56.1), while the training-median baseline MAE was 42.4 hours. Thus the panel added temporal information in this direction, and the simpler regularised model transferred better.
+### Error distribution
 
-Training on severe contusions and testing mild contusions produced a ridge MAE of 31.7 hours (bootstrap 95% CI 6.5–59.7), RMSE of 61.4 hours and R² of 0.02. The random forest reduced MAE from the 42.4-hour baseline to 37.3 hours but had negative R² (−0.24). This asymmetric result indicates that severity changes distort temporal profiles and that improved average absolute error can coexist with damaging large errors. Neither model can be described as severity-invariant.
+Performance was not uniform across the observed range. Averaging each sample's panel prediction
+across the 20 registered repetitions exposed regression towards the cohort centre. The sole
+27-day sample had a mean prediction of approximately 13.8 days; individual samples at 19 and
+22 days also had errors above eight days. Very few observations occurred after day 14, so the
+overall MAE must not be read as comparable resolution throughout the full 3–27-day range.
+
+### Exploratory evidence
+
+The GSE8056 locked-panel classifier achieved 83.3% four-group array-level accuracy (exact 95% CI
+51.6–97.9%) and 88.9% across injured-only bins (95% CI 51.8–99.7%). These intervals remain wide,
+and panel ordering before that analysis cannot be independently verified from commit history.
+
+Rat ridge transfer was asymmetric. Training on mild and testing severe contusions produced
+22.4-hour MAE and R² 0.610; reversing the direction produced 31.7-hour MAE and R² 0.018. A random
+forest had negative R² in the failed direction. This is evidence of context sensitivity, not
+human transportability.
 
 ## Discussion
 
-The strongest finding is not a headline accuracy but the persistence of some temporal information under deliberately constrained analyses. Human classification remained high after controls were removed, reducing—but not eliminating—the concern that the model merely distinguished injured from uninjured tissue. Cross-severity rat testing also improved MAE in both directions, although the negative R² in one direction demonstrates poor transportability for some observations.
+The registered primary result supports temporal information in the locked panel for surgically
+sampled burn wounds in this cohort's 3–27-day range. It is stronger than the earlier pooled-array
+evidence because it uses individual samples, exact days and patient identifiers. It nevertheless
+remains internal resampling of one small cohort.
 
-Biologically, the panel covers plausible transitions from cytokine and myeloid activation towards angiogenesis and matrix deposition. However, the analysis does not establish that any marker is specific to elapsed time. Changes may reflect burn depth, anatomical composition, systemic inflammation, age, sex or other pooled characteristics. The human array is the unit of analysis; treating its five component specimens as independent would be pseudoreplication.
+The principal threats are target concentration around operation schedules; sparse late-range
+coverage; incomplete burn severity, treatment and infection information; and unavailable
+sample-level collection year and RNA integrity despite collection spanning 2002–2018. Storage
+or degradation structure could therefore masquerade as temporal biology. The inherited
+study-author count filtering also cannot be reconstructed from the submitted filtered matrix.
 
-The study has four central limitations. First, GSE8056 contains only twelve pooled arrays, yielding extremely wide confidence intervals. Second, its time labels are broad bins rather than exact outcomes. Third, normal tissue originated from different surgical settings. Fourth, the cross-context study changes species, tissue and injury mechanism simultaneously. It is valuable as a stress test, not external human validation.
-
-A confirmatory study should use unpooled human samples, exact sampling times, predefined exclusion rules, RNA-quality and batch measures, and individual metadata covering anatomy, severity, infection, medication and comorbidity. The locked panel and model should then be frozen before testing at an independent site. Blinded comparison with forensic-pathologist estimates and explicit reporting of inconclusive results would be essential.
+The reported intervals quantify uncertainty in cohort-level performance comparisons conditional
+on the retained repeated-CV predictions. The primary model does not provide calibrated
+prediction intervals for individual wound-age estimates. The synthetic demonstration includes
+such intervals only to test software behaviour and supplies no biological evidence.
 
 ## Conclusion
 
-ChronosWound shows that an interpretable injury-response panel contains temporal structure in pooled human burn data and retains limited signal across injury severity in an animal model. It also shows why apparent accuracy is insufficient: uncertainty is wide and cross-severity performance is asymmetric. The repository should therefore be understood as a reproducible hypothesis-generating framework, not a forensic instrument.
+ChronosWound demonstrates useful internal temporal resolution from a locked transcript panel in
+one subacute human burn cohort, while exposing large late-range errors and failed cross-context
+transfer. It is a reproducible hypothesis-generating research project, not a validated wound-age
+estimator, and must not be used in clinical, legal or forensic casework.
 
 ## References
 
 1. Greco JA III, Pollins AC, Boone BE, Levy SE, Nanney LB. A microarray analysis of temporal gene expression profiles in thermally injured human skin. *Burns*. 2010;36(2):192–204. PMID: 19781859. GEO: GSE8056.
 2. Li N, Li C, Li D, *et al.* Identifying biomarkers for evaluating wound extent and age in the contused muscle of rats using microarray analysis: a pilot study. *PeerJ*. 2021;9:e12709. GEO: GSE162565.
-3. Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society, Series B*. 1995;57(1):289–300.
